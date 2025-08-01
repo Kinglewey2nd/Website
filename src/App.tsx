@@ -1,20 +1,35 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, FormEvent } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
-import LoginPage from "./components/LoginPage";
+const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const navigate = useNavigate();
 
-<Route path="/login" element={<LoginPage />} />
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
 
-import MainPage from "./components/MainPage";
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful:', userCredential.user);
+      navigate('/collection'); // Change if needed
+    } catch (err: any) {
+      console.error('Login failed:', err.message);
+      setError('Invalid email or password');
+    }
+  };
 
-export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<div className='text-white text-center mt-20 text-3xl'>Login Page (Coming Soon)</div>} />
-        <Route path="*" element={<div className='text-white text-center mt-20 text-3xl'>404 Not Found</div>} />
-      </Routes>
-    </Router>
-  );
-}
+    <div style={{
+      maxWidth: '400px',
+      margin: '5rem auto',
+      padding: '2rem',
+      backgroundColor: '#fff',
+      borderRadius: '8px',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+    }}>
+      <h2>Login</h2>
