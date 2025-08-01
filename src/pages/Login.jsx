@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import { useNavigate } from 'react-router-dom'; // ✅ Import navigation hook
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // ✅ Set up navigation
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Login successful:', userCredential.user);
-      navigate('/collection'); // ✅ Redirect after login
+      navigate('/collection'); // 👈 Change this if needed
     } catch (error) {
       console.error('Login failed:', error.message);
       alert('Login failed: ' + error.message);
