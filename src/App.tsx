@@ -2,6 +2,9 @@ import React, { useState, FormEvent } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import CreateAccount from './pages/CreateAccount';
+
+<Route path="/signup" element={<CreateAccount />} />
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
