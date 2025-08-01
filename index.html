@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collection Book</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>My Collection</h1>
+    <div class="controls">
+      <div class="filters">
+        <!-- Rarity checkboxes -->
+        <label><input type="checkbox" class="rarity-filter" value="Common" checked /> Common</label>
+        <label><input type="checkbox" class="rarity-filter" value="Rare" checked /> Rare</label>
+        <label><input type="checkbox" class="rarity-filter" value="Epic" checked /> Epic</label>
+        <label><input type="checkbox" class="rarity-filter" value="Mythic" checked /> Mythic</label>
+        <!-- Foil toggle -->
+        <label><input type="checkbox" id="foilToggle" /> Foil Only</label>
+      </div>
+      <div class="sort-search">
+        <!-- Sort dropdown -->
+        <select id="sortSelect">
+          <option value="name">Name</option>
+          <option value="rarity">Rarity</option>
+          <option value="quantity">Quantity</option>
+        </select>
+        <!-- Search bar -->
+        <input type="text" id="searchInput" placeholder="Search cards..." />
+      </div>
+    </div>
+  </header>
+  <main>
+    <section id="cardsContainer" class="cards"></section>
+    <section id="progressContainer" class="progress"></section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
