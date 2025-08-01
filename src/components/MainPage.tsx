@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged, User } from "firebase/auth";
 
 export default function MainPage() {
   const navigate = useNavigate();
-  const user = auth.currentUser;
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = () => {
     signOut(auth).then(() => navigate("/login"));
@@ -41,22 +48,3 @@ export default function MainPage() {
             </button>
           ) : (
             <>
-              <button
-                onClick={() => navigate("/collection")}
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 transition rounded-xl text-white text-lg font-medium shadow-lg"
-              >
-                Enter Game
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-6 py-3 border border-red-400 hover:bg-red-500 transition rounded-xl text-white text-lg font-medium shadow-lg"
-              >
-                Logout
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
