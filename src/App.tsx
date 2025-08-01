@@ -1,5 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import LoginPage from "./components/LoginPage";
+
+<Route path="/login" element={<LoginPage />} />
+
 import MainPage from "./components/MainPage";
 
 export default function App() {
