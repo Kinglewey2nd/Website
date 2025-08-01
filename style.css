@@ -115,6 +115,83 @@ body {
   background: #3498db;
 }
 
+/* Auth forms */
+.form-switch {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+#signInForm,
+#signUpForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 300px;
+}
+
+#signInForm input,
+#signUpForm input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#signInForm button,
+#signUpForm button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: #5dade2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#signInForm button:hover,
+#signUpForm button:hover {
+  background: #3498db;
+}
+
+/* Profile page */
+.profile-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.avatar.large {
+  width: 80px;
+  height: 80px;
+  font-size: 2rem;
+}
+
+.avatar-edit input[type="file"] {
+  margin-top: 0.5rem;
+}
+
+.badges-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badges-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fff;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.badges-list input[type="checkbox"] {
+  margin: 0;
+}
+
 /* Controls container spacing for collection page */
 .controls {
   display: flex;
