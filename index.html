@@ -7,33 +7,64 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Navigation bar -->
   <header>
-    <h1>My Collection</h1>
-    <div class="controls">
-      <div class="filters">
-        <!-- Rarity checkboxes -->
-        <label><input type="checkbox" class="rarity-filter" value="Common" checked /> Common</label>
-        <label><input type="checkbox" class="rarity-filter" value="Rare" checked /> Rare</label>
-        <label><input type="checkbox" class="rarity-filter" value="Epic" checked /> Epic</label>
-        <label><input type="checkbox" class="rarity-filter" value="Mythic" checked /> Mythic</label>
-        <!-- Foil toggle -->
-        <label><input type="checkbox" id="foilToggle" /> Foil Only</label>
+    <nav class="navbar">
+      <div class="nav-left">
+        <span class="brand">Collection Book</span>
+        <ul class="nav-menu">
+          <li class="nav-item" data-section="landing">Home</li>
+          <li class="nav-item" data-section="collection">Collection</li>
+          <li class="nav-item" data-section="shop">Shop</li>
+        </ul>
       </div>
-      <div class="sort-search">
-        <!-- Sort dropdown -->
-        <select id="sortSelect">
-          <option value="name">Name</option>
-          <option value="rarity">Rarity</option>
-          <option value="quantity">Quantity</option>
-        </select>
-        <!-- Search bar -->
-        <input type="text" id="searchInput" placeholder="Search cards..." />
+      <div class="nav-right">
+        <div id="userArea"></div>
       </div>
-    </div>
+    </nav>
   </header>
   <main>
-    <section id="cardsContainer" class="cards"></section>
-    <section id="progressContainer" class="progress"></section>
+    <!-- Landing page -->
+    <section id="landing-section" class="section active">
+      <h2>Welcome to the Collection Book</h2>
+      <p>Manage your trading card collection, track progress, and acquire new cards!</p>
+      <div id="login-form">
+        <input type="text" id="usernameInput" placeholder="Enter your username" />
+        <button id="loginButton">Log In</button>
+      </div>
+    </section>
+    <!-- Collection page -->
+    <section id="collection-section" class="section">
+      <h2>My Collection</h2>
+      <div class="controls">
+        <div class="filters">
+          <!-- Rarity checkboxes -->
+          <label><input type="checkbox" class="rarity-filter" value="Common" checked /> Common</label>
+          <label><input type="checkbox" class="rarity-filter" value="Rare" checked /> Rare</label>
+          <label><input type="checkbox" class="rarity-filter" value="Epic" checked /> Epic</label>
+          <label><input type="checkbox" class="rarity-filter" value="Mythic" checked /> Mythic</label>
+          <!-- Foil toggle -->
+          <label><input type="checkbox" id="foilToggle" /> Foil Only</label>
+        </div>
+        <div class="sort-search">
+          <!-- Sort dropdown -->
+          <select id="sortSelect">
+            <option value="name">Name</option>
+            <option value="rarity">Rarity</option>
+            <option value="quantity">Quantity</option>
+          </select>
+          <!-- Search bar -->
+          <input type="text" id="searchInput" placeholder="Search cards..." />
+        </div>
+      </div>
+      <div id="cardsContainer" class="cards"></div>
+      <div id="progressContainer" class="progress"></div>
+    </section>
+    <!-- Shop page -->
+    <section id="shop-section" class="section">
+      <h2>Shop</h2>
+      <div id="shopContainer" class="cards"></div>
+    </section>
   </main>
   <script src="script.js"></script>
 </body>
