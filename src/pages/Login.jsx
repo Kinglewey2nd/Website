@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase'; // Adjust path if needed
+import { auth } from '../firebase';
+import { useNavigate } from 'react-router-dom'; // ✅ Import navigation hook
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // ✅ Set up navigation
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload
-
+    e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Login successful:', userCredential.user);
-      // Redirect or update auth state here if needed
+      navigate('/collection'); // ✅ Redirect after login
     } catch (error) {
       console.error('Login failed:', error.message);
-      alert('Login failed: ' + error.message); // Basic user feedback
+      alert('Login failed: ' + error.message);
     }
   };
 
@@ -30,4 +31,25 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width:
+            style={{ width: '100%' }}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{ width: '100%' }}
+          />
+        </div>
+        <button type="submit" style={{ width: '100%' }}>
+          Login
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default Login;
