@@ -4,6 +4,7 @@ import MainPage from "./components/MainPage";
 import AuthPage from "./components/AuthPage";
 import ShopPage from "./components/ShopPage";
 import CollectionPage from "./components/CollectionPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -11,8 +12,22 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<AuthPage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/collection" element={<CollectionPage />} />
+        <Route
+          path="/shop"
+          element={
+            <PrivateRoute>
+              <ShopPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/collection"
+          element={
+            <PrivateRoute>
+              <CollectionPage />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
