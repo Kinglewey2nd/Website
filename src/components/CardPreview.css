@@ -1,0 +1,82 @@
+.card-preview {
+  width: 240px;
+  height: 360px;
+  background: #1e1e1e;
+  color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+  font-family: 'Cinzel', serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.gray-border     { border: 4px solid #ccc; }
+.green-border    { border: 4px solid #4CAF50; }
+.blue-border     { border: 4px solid #2196F3; }
+.purple-border   { border: 4px solid #9C27B0; }
+.gold-border     { border: 4px solid gold; }
+.red-border      { border: 4px solid crimson; }
+.rainbow-border  {
+  border: 4px solid transparent;
+  background-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+  background-clip: border-box;
+}
+
+.image-section {
+  position: relative;
+  height: 55%;
+  overflow: hidden;
+}
+
+.image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rarity-icon {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 1.5rem;
+}
+
+.card-body {
+  padding: 0.75rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.card-type {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 0.5rem;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.card-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.attack, .health {
+  background: #333;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
