@@ -1,71 +1,74 @@
+import '../styles/cards.css';
+import { useEffect, useState } from 'react';
 
-import React, { useEffect, useState } from "react";
-import "@/styles/animations.css";
-import { generateCardPack } from "@/utils/cardGeneration";
-import { saveOpenedCards } from "@/firebase/firestore";
-import { Link } from "react-router-dom";
+interface Card {
+  id: string;
+  name: string;
+  rarity: string;
+}
 
-export default function PackOpening({ userId = "demo-user", onFinish = () => {} }) {
-  const [cards, setCards] = useState<any[]>([]);
+const generateCards = (): Card[] => {
+  const rarities = ['Common', 'Rare', 'Epic', 'Mythic'];
+  return Array.from({ length: 5 }, (_, i) => {
+    const rarity = rarities[Math.floor(Math.random() * rarities.length)];
+    return {
+      id: `${rarity}-${i}-${Date.now()}`,
+      name: `${rarity} Card ${i + 1}`,
+      rarity
+    };
+  });
+};
+
+export default function PackOpening() {
+  const [cards, setCards] = useState<Card[]>([]);
   const [revealed, setRevealed] = useState<number[]>([]);
 
-  useEffect(() => {
-    const pack = generateCardPack();
-    setCards(pack);
-  }, []);
+  const openPack = () => {
+    setCards(generateCards());
+    setRevealed([]);
+  };
 
-  const revealCard = (index: number) => {
-    if (!revealed.includes(index)) {
-      setRevealed([...revealed, index]);
+  const revealCard = (i: number) => {
+    if (!revealed.includes(i)) {
+      setRevealed([...revealed, i]);
     }
   };
 
-  const revealAll = () => {
-    setRevealed([0, 1, 2, 3, 4]);
-  };
-
-  const handleSave = async () => {
-    await saveOpenedCards(userId, cards);
-    onFinish();
-  };
+  useEffect(() => {
+    openPack();
+  }, []);
 
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-black min-h-screen px-4 py-12 text-white">
-      <h1 className="text-4xl font-bold text-center mb-8 text-purple-300 drop-shadow-lg">Open Your Pack</h1>
-      <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+    <div style={{ padding: "2rem" }}>
+      <h2>Open Your Pack</h2>
+      <div style={{ display: "flex", gap: "1rem" }}>
         {cards.map((card, i) => (
           <div
             key={i}
-            className={`card-flip ${revealed.includes(i) ? "revealed" : ""} rarity-${card.rarity.toLowerCase()}`}
+            className={`card-flip ${revealed.includes(i) ? "revealed" : ""} rarity-${card.rarity}`}
             onClick={() => revealCard(i)}
-            style={{ transitionDelay: `${i * 0.2}s` }}
+            style={{
+              width: "120px",
+              height: "180px",
+              backgroundColor: "#111",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "white",
+              fontSize: "0.8rem",
+              cursor: "pointer",
+              border: "2px solid #444",
+              transition: "all 0.3s ease",
+            }}
           >
-            <div className="card-inner">
-              <div className="card-front" />
-              <div className="card-back">
-                <img src={card.image} alt={card.name} className="w-full rounded shadow-lg" />
-                <p className="mt-2 font-semibold">{card.name}</p>
-              </div>
-            </div>
+            {revealed.includes(i) ? card.name : "Click to Reveal"}
           </div>
         ))}
       </div>
-      <div className="text-center mt-10">
-        {revealed.length < 5 ? (
-          <button onClick={revealAll} className="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-full text-lg shadow-md transition">
-            Reveal All
-          </button>
-        ) : (
-          <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 px-8 py-3 rounded-full text-lg shadow-md transition">
-            Add to Collection
-          </button>
-        )}
-        <div className="mt-6">
-          <Link to="/pack" className="text-sm text-purple-400 hover:text-purple-300 underline">
-            ← Back to Pack Page
-          </Link>
-        </div>
-      </div>
+      <button onClick={openPack} style={{ marginTop: "2rem", padding: "0.6rem 1.2rem", fontSize: "1rem" }}>
+        Open Another Pack
+      </button>
     </div>
   );
 }

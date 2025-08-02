@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lora&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Lora', serif;
+  background: url('/twilight-swirl.jpg') center center / cover fixed no-repeat;
+  color: #eee;
+}
+
+h1, h2, h3 {
+  font-family: 'Cinzel', serif;
+  color: white;
+}
