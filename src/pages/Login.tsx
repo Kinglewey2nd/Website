@@ -1,53 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import Header from '../components/Header';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (email && password) {
-      localStorage.setItem('spellgrave-username', name || email);
-      navigate('/menu');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const auth = getAuth();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/main-menu');
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (
-    <div style={{
-      backgroundImage: 'url("/background.jpg")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      height: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      color: 'white'
-    }}>
-      <h1>Welcome to SpellGrave</h1>
-      <input
-        type="text"
-        placeholder="Enter your name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        style={{ margin: '0.5rem', padding: '0.5rem' }}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        style={{ margin: '0.5rem', padding: '0.5rem' }}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        style={{ margin: '0.5rem', padding: '0.5rem' }}
-      />
-      <button onClick={handleLogin} style={{ padding: '0.5rem 1rem', marginTop: '1rem' }}>Log In</button>
-      <p style={{ marginTop: '1rem' }}>Forgot password?</p>
-    </div>
+    <>
+      <Header />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4rem', color: 'white' }}>
+        <h2>Login</h2>
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '1rem' }}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+      </div>
+    </>
   );
+}
