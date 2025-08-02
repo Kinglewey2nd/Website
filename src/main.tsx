@@ -1,12 +1,18 @@
+// src/components/main.tsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Main: React.FC = () => {
-  console.log("✅ Main menu component mounted");
+  const navigate = useNavigate();
 
   return (
-    <div style={{ color: 'white', textAlign: 'center', paddingTop: '3rem' }}>
-      <h1>✅ Main Menu Loaded</h1>
-      <p>If you can see this, the route is working.</p>
+    <div style={{ textAlign: 'center', paddingTop: '5rem' }}>
+      <h1 style={{ fontSize: '3rem', color: 'white' }}>SpellGrave</h1>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
+        <button onClick={() => navigate('/profile')}>View Profile</button>
+        <button onClick={() => navigate('/collection')}>Go to Collection</button>
+        <button onClick={() => navigate('/pack/open')}>Open Pack</button>
+      </div>
     </div>
   );
 };
