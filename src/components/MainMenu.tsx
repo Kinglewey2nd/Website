@@ -1,7 +1,9 @@
 import React from 'react';
+import { useAuth } from '../useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const MainMenu: React.FC = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -10,26 +12,11 @@ const MainMenu: React.FC = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
-      textShadow: '1px 1px 3px black'
+      justifyContent: 'center'
     }}>
-      <h1 style={{ fontSize: '3rem' }}>Welcome to SpellGrave</h1>
-      <p style={{ fontSize: '1.2rem' }}>Choose an option from the menu below</p>
-      <button
-        onClick={() => navigate('/login')}
-        style={{
-          marginTop: '2rem',
-          padding: '0.8rem 1.5rem',
-          fontSize: '1rem',
-          backgroundColor: '#3b82f6',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          color: 'white'
-        }}
-      >
-        Login
-      </button>
+      <h1>Welcome to SpellGrave</h1>
+      {user && <p style={{ fontSize: '1.2rem' }}>Welcome back, {user.email}</p>}
+      {!user && <button onClick={() => navigate('/login')}>Login</button>}
     </div>
   );
 };

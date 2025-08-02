@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
@@ -14,18 +15,29 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
+      navigate('/');
     } catch (error: any) {
-      console.error(error);
       alert("Login failed: " + error.message);
+    }
+  };
+
+  const handleOAuth = async (provider: any) => {
+    try {
+      await signInWithPopup(auth, provider);
+      navigate('/');
+    } catch (error: any) {
+      alert("OAuth failed: " + error.message);
     }
   };
 
@@ -39,30 +51,13 @@ const Login: React.FC = () => {
       color: 'white'
     }}>
       <h2>Login</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        style={{ padding: '0.5rem', marginBottom: '1rem', borderRadius: '5px' }}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        style={{ padding: '0.5rem', marginBottom: '1rem', borderRadius: '5px' }}
-      />
-      <button onClick={handleLogin} style={{
-        padding: '0.5rem 1rem',
-        backgroundColor: '#3b82f6',
-        border: 'none',
-        borderRadius: '5px',
-        color: 'white'
-      }}>Login</button>
+      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={() => handleOAuth(googleProvider)}>Login with Google</button>
+      <button onClick={() => handleOAuth(facebookProvider)}>Login with Facebook</button>
       <div style={{ marginTop: '1rem' }}>
-        <a href="/signup" style={{ color: '#3b82f6', marginRight: '1rem' }}>Create Account</a>
-        <a href="/reset-password" style={{ color: '#3b82f6' }}>Forgot Password?</a>
+        <a href="/signup">Create Account</a> | <a href="/reset-password">Forgot Password?</a>
       </div>
     </div>
   );
