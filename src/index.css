@@ -17,6 +17,12 @@ body {
   padding-top: 3rem;
 }
 
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
 /* Buttons */
 button {
   margin-bottom: 2rem;
