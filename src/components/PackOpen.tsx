@@ -69,4 +69,11 @@ const PackOpen: React.FC = () => {
   );
 };
 
+<button onClick={() => navigate('/menu')} className="back-button"> 
+  Back to Menu
+</button>
+
+
 export default PackOpen;
+
+
