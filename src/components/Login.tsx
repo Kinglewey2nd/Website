@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup, getAuth } from 'firebase/auth';
 import { app, googleProvider } from '../firebase';
 import { useNavigate, Link } from 'react-router-dom';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,6 +17,16 @@ const Login: React.FC = () => {
       navigate('/menu');
     } catch (err: any) {
       setError(err.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate('/menu');
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      setError('Google login failed.');
     }
   };
 
@@ -49,6 +59,14 @@ const Login: React.FC = () => {
           Login
         </button>
       </form>
+
+      <button
+        onClick={handleGoogleLogin}
+        className="bg-red-600 text-white px-4 py-2 rounded mt-4"
+      >
+        Sign in with Google
+      </button>
+
       <p style={{ marginTop: '1rem' }}>
         <Link to="/forgot-password" style={{ color: 'lightblue' }}>
           Forgot Password?
@@ -59,7 +77,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-
-  <button onClick={handleGoogleLogin} className="bg-red-600 text-white px-4 py-2 rounded mt-4">
-    Sign in with Google
-  </button>
