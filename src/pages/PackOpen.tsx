@@ -39,6 +39,7 @@ const generateCards = (): Card[] => {
   return cards;
 };
 
+}
 export default function PackOpen() {
   const [cards, setCards] = useState<Card[]>([]);
   const [revealed, setRevealed] = useState<number[]>([]);

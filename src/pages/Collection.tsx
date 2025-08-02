@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Header from '../components/Header';
 import { useEffect, useState } from 'react';
 
@@ -8,6 +8,7 @@ interface Card {
   rarity: string;
 }
 
+}
 export default function Collection() {
   const [ownedCards, setOwnedCards] = useState<Card[]>([]);
 

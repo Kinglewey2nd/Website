@@ -1,6 +1,8 @@
-import React
-import Header from '../components/Header'; from 'react';
+import React from 'react';
+import React from 'react';
+import Header from '../components/Header';
 
+}
 export default function Profile() {
   return (
     <>
