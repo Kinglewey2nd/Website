@@ -1,1 +1,3 @@
-// Placeholder for src/components/Login.tsx
+import React from 'react';
+const Login = () => <div>Login Page</div>;
+export default Login;

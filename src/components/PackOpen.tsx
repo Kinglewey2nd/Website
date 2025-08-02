@@ -1,1 +1,3 @@
-// Placeholder for src/components/PackOpen.tsx
+import React from 'react';
+const PackOpen = () => <div>PackOpen Page</div>;
+export default PackOpen;

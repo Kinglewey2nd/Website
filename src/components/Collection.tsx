@@ -1,1 +1,3 @@
-// Placeholder for src/components/Collection.tsx
+import React from 'react';
+const Collection = () => <div>Collection Page</div>;
+export default Collection;
