@@ -13,20 +13,20 @@ const firebaseConfig = {
   measurementId: "G-FKXDG97B9Y"
 };
 
-// ✅ Firebase app and auth instance
+// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ✅ Context shape
+// ✅ Define context type
 interface AuthContextType {
   user: User | null;
   loading: boolean;
 }
 
-// ✅ Context with undefined fallback
+// ✅ Create context (initially undefined to prevent unsafe usage)
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// ✅ AuthProvider
+// ✅ Provide auth state to children
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,9 +35,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
-      if (currentUser) localStorage.setItem("user", JSON.stringify(currentUser));
-      else localStorage.removeItem("user");
+
+      if (currentUser) {
+        localStorage.setItem("user", JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem("user");
+      }
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -48,13 +53,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// ✅ useAuth hook with safety + debug
+// ✅ Hook to access auth context safely
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  console.log("Calling useAuth - context is:", context); // Debug line
-
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
