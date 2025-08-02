@@ -1,15 +1,17 @@
 
-:root, body, html {
-  height: 100%;
+html, body, #root {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0;
+  height: 100%;
   background: url('https://images.unsplash.com/photo-1607083200923-cd8f94f563d2?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
   background-size: cover;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, p, a, button, input {
+* {
+  box-sizing: border-box;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
