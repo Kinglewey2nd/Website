@@ -32,6 +32,8 @@ const Collection: React.FC = () => {
   );
 };
 
+
+const navigate = useNavigate();
 <button onClick={() => navigate('/menu')} className="back-button">
   Back to Menu
 </button>
