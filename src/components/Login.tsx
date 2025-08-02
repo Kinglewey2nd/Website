@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, getAuth } from 'firebase/auth';
+import { app, googleProvider } from '../firebase';
 import { useNavigate, Link } from 'react-router-dom';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
