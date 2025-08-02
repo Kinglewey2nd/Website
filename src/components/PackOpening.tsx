@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import "@/styles/animations.css";
 import { generateCardPack } from "@/utils/cardGeneration";
 import { saveOpenedCards } from "@/firebase/firestore";
+import { Link } from "react-router-dom";
 
 export default function PackOpening({ userId = "demo-user", onFinish = () => {} }) {
   const [cards, setCards] = useState<any[]>([]);
@@ -57,6 +58,11 @@ export default function PackOpening({ userId = "demo-user", onFinish = () => {} 
           Add to Collection
         </button>
       )}
+      <div className="mt-6">
+        <Link to="/pack" className="text-blue-300 hover:text-blue-500 underline">
+          ← Back to Pack Page
+        </Link>
+      </div>
     </div>
   );
 }
