@@ -28,13 +28,13 @@ const Profile: React.FC = () => {
     <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
       <h2>Welcome, {user?.displayName}</h2>
       <p>XP: {xp}</p>
-    </div>
-    
+      
     <button onClick={() => navigate('/menu')} className="back-button">
-  Back to Menu
-</button>
-
-  );
+      Back to Menu
+    </button>
+      
+    </div>
+    );
 };
 
 
