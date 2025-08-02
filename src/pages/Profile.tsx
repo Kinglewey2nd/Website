@@ -1,13 +1,12 @@
 import React from 'react';
-import React from 'react';
-import Header from '../components/Header';
 
-export default function Profile() {
+const Profile = () => {
   return (
     <>
-      <Header />
-    <div style={{ color: 'white', textAlign: 'center', paddingTop: '10vh' }}>
-      <h1>Profile Page (Coming Soon)</h1>
-    </div>
+      <h1 className="text-2xl font-bold text-white mb-4">Your Profile</h1>
+      <p className="text-white">Name, nickname, XP, and badges will display here.</p>
     </>
   );
+};
+
+export default Profile;
