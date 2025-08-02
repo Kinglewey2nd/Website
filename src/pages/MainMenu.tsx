@@ -1,34 +1,21 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
-export default function MainMenu() {
-  const navigate = useNavigate();
-
+const MainMenu: React.FC = () => {
   return (
-    <>
-      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white">
-        <h1 className="text-5xl font-bold mb-10">SpellGrave</h1>
-        <div className="space-y-4">
-          <button
-            className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl text-xl"
-            onClick={() => navigate('/pack/open')}
-          >
-            Open Packs
-          </button>
-          <button
-            className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl text-xl"
-            onClick={() => navigate('/collection')}
-          >
-            View Collection
-          </button>
-          <button
-            className="bg-pink-600 hover:bg-pink-700 px-6 py-3 rounded-xl text-xl"
-            onClick={() => navigate('/profile')}
-          >
-            Profile
-          </button>
-        </div>
-      </div>
-    </>
+    <div style={{
+      height: '100vh',
+      background: 'linear-gradient(to bottom right, #1e293b, #334155)',
+      color: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'sans-serif'
+    }}>
+      <h1 style={{ fontSize: '3rem' }}>Welcome to SpellGrave</h1>
+      <p style={{ fontSize: '1.2rem' }}>Choose an option from the menu above</p>
+    </div>
   );
-}
+};
+
+export default MainMenu;

@@ -1,13 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PackOpen from './pages/PackOpen';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainMenu from './components/MainMenu';
 
-export default function App() {
+function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/pack/open" element={<PackOpen />} />
+        <Route path="/" element={<MainMenu />} />
+        <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center' }}>Page Not Found</div>} />
       </Routes>
     </Router>
   );
 }
+
+export default App;
