@@ -1,5 +1,5 @@
-import React
-import Header from '../components/Header';, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Header from '../components/Header';
 
 interface Card {
   id: string;
