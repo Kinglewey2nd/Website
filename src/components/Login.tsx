@@ -60,7 +60,13 @@ const Login: React.FC = () => {
         borderRadius: '5px',
         color: 'white'
       }}>Login</button>
+    
+      <div style={{ marginTop: '1rem' }}>
+        <a href="/signup" style={{ color: '#3b82f6', marginRight: '1rem' }}>Create Account</a>
+        <a href="/reset-password" style={{ color: '#3b82f6' }}>Forgot Password?</a>
+      </div>
     </div>
+    
   );
 };
 
