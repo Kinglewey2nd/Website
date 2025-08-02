@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import Profile from './components/Profile';
 import Login from './components/Login';
 import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
@@ -33,6 +34,7 @@ const App: React.FC = () => {
 
   return (
     <Routes>
+        <Route path="/profile" element={<Profile />} />
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<RequireAuth><MainMenu /></RequireAuth>} />

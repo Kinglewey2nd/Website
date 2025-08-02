@@ -15,6 +15,26 @@ const MainMenu: React.FC = () => {
   };
 
   return (
+    <div className="flex flex-col items-center text-white text-xl mb-4">
+      {user && (
+        <>
+          <img src={user.photoURL} alt="Profile" className="rounded-full w-20 h-20 mb-2" />
+          <div>Welcome, {user.displayName || user.email}</div>
+          <button
+            onClick={() => {
+              localStorage.removeItem('user');
+              signOut(auth).then(() => {
+                window.location.href = "/";
+              });
+            }}
+            className="mt-2 bg-red-600 px-4 py-2 rounded"
+          >
+            Sign Out
+          </button>
+          <Link to="/profile"><button className="mt-2 bg-blue-500 px-4 py-2 rounded">View Profile</button></Link>
+        </>
+      )}
+    </div>
     <div style={{ textAlign: 'center', padding: '2rem' }}>
       <h1>Welcome to SpellGrave</h1>
       <p style={{ marginBottom: '2rem' }}>{user?.email || 'Unknown user'}</p>
