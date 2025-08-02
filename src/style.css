@@ -1,17 +1,1 @@
-
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: url('https://images.unsplash.com/photo-1607083200923-cd8f94f563d2?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: white;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-}
+body { margin: 0; font-family: 'Segoe UI', sans-serif; background: url('/fantasy-bg.jpg') center/cover no-repeat fixed; color: white; }
