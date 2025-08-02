@@ -1,19 +1,14 @@
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './index.css';
 
-const Main: React.FC = () => {
-  const navigate = useNavigate();
-
-  return (
-    <div style={{ textAlign: 'center', paddingTop: '5rem', color: 'white' }}>
-      <h1 style={{ fontSize: '3rem' }}>SpellGrave</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
-        <button onClick={() => navigate('/profile')}>View Profile</button>
-        <button onClick={() => navigate('/collection')}>Go to Collection</button>
-        <button onClick={() => navigate('/pack/open')}>Open Pack</button>
-      </div>
-    </div>
-  );
-};
-
-export default Main;
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>,
+);
