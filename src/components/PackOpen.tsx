@@ -63,14 +63,16 @@ const PackOpen: React.FC = () => {
                 <img src={card.image} alt={card.name} />
                 <p>{card.name}</p>
               </div>
+              
             </div>
           </div>
         ))}
       </div>
-    </div>
-<button onClick={() => navigate('/menu')} className="back-button"> 
+      <button onClick={() => navigate('/menu')} className="back-button"> 
   Back to Menu
 </button>
+    </div>
+
   );
 };
 
