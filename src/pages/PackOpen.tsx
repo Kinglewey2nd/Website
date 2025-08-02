@@ -7,22 +7,26 @@ interface Card {
   rarity: string;
 }
 
+
 const generateCards = (): Card[] => {
   const rarities = ['Common', 'Rare', 'Epic', 'Mythic'];
   const mythicCard: Card = {
     id: `Kaelen-${Date.now()}`,
     name: 'Kaelen',
-    rarity: 'Mythic',
+    rarity: 'Mythic'
   };
 
   const cards: Card[] = [mythicCard];
+
   for (let i = 1; i < 5; i++) {
     const rarity = rarities[Math.floor(Math.random() * rarities.length)];
     cards.push({
       id: `${rarity}-${i}-${Date.now()}`,
       name: `${rarity} Card ${i + 1}`,
-      rarity,
+      rarity
+    });
   }
+
   return cards;
 };
 };
