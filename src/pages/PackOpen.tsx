@@ -5,7 +5,6 @@ interface Card {
   id: string;
   name: string;
   rarity: string;
-}
 
 const STORAGE_KEY = 'spellgrave-collection';
 
@@ -34,12 +33,10 @@ const generateCards = (): Card[] => {
       name: `${rarity} Card ${i + 1}`,
       rarity
     });
-  }
 
   return cards;
 };
 
-}
 export default function PackOpen() {
   const [cards, setCards] = useState<Card[]>([]);
   const [revealed, setRevealed] = useState<number[]>([]);
@@ -58,7 +55,6 @@ export default function PackOpen() {
     if (!revealed.includes(i)) {
       setRevealed([...revealed, i]);
       playSoundForRarity(cards[i].rarity);
-    }
   };
 
   const playSoundForRarity = (rarity: string) => {
@@ -141,4 +137,3 @@ export default function PackOpen() {
       </div>
     </>
   );
-}

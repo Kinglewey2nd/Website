@@ -6,9 +6,7 @@ interface Card {
   id: string;
   name: string;
   rarity: string;
-}
 
-}
 export default function Collection() {
   const [ownedCards, setOwnedCards] = useState<Card[]>([]);
 
@@ -19,7 +17,6 @@ export default function Collection() {
       setOwnedCards(JSON.parse(saved));
     } else {
       setOwnedCards([]);
-    }
   }, []);
 
   const getCardImage = (rarity: string, name: string) => {
@@ -64,4 +61,3 @@ export default function Collection() {
     </div>
     </>
   );
-}
