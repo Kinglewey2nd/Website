@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React
+import Header from '../components/Header';, { useEffect, useState } from 'react';
 
 interface Card {
   id: string;
@@ -25,6 +26,8 @@ export default function Collection() {
   };
 
   return (
+    <>
+      <Header />
     <div style={{
       minHeight: '100vh',
       background: 'black',
@@ -57,5 +60,6 @@ export default function Collection() {
         </div>
       )}
     </div>
+    </>
   );
 }

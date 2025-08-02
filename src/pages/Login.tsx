@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    // Placeholder for Firebase login
     if (email && password) {
+      localStorage.setItem('spellgrave-username', name || email);
       navigate('/menu');
     }
   };
@@ -27,6 +28,13 @@ export default function Login() {
     }}>
       <h1>Welcome to SpellGrave</h1>
       <input
+        type="text"
+        placeholder="Enter your name"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        style={{ margin: '0.5rem', padding: '0.5rem' }}
+      />
+      <input
         type="email"
         placeholder="Email"
         value={email}
@@ -41,7 +49,7 @@ export default function Login() {
         style={{ margin: '0.5rem', padding: '0.5rem' }}
       />
       <button onClick={handleLogin} style={{ padding: '0.5rem 1rem', marginTop: '1rem' }}>Log In</button>
-            <p style={{ marginTop: '1rem' }}>Forgot password?</p>
+      <p style={{ marginTop: '1rem' }}>Forgot password?</p>
     </div>
   );
 }

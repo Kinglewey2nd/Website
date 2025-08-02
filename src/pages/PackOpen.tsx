@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React
+import Header from '../components/Header';, { useEffect, useState } from 'react';
 
 interface Card {
   id: string;
@@ -21,11 +22,9 @@ const generateCards = (): Card[] => {
       id: `${rarity}-${i}-${Date.now()}`,
       name: `${rarity} Card ${i + 1}`,
       rarity,
-    });
   }
   return cards;
 };
-  });
 };
 
 export default function PackOpen() {
@@ -57,6 +56,8 @@ export default function PackOpen() {
   };
 
   return (
+    <>
+      <Header />
     <div style={{
       minHeight: '100vh',
       background: 'black',
@@ -96,5 +97,6 @@ export default function PackOpen() {
         ))}
       </div>
     </div>
+    </>
   );
 }
