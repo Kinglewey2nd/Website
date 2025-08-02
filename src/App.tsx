@@ -48,7 +48,7 @@ const App: React.FC = () => {
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/menu" element={<RequireAuth><Main /></RequireAuth>} />
+      <Route path="/menu" element={<RequireAuth><main /></RequireAuth>} />
       <Route path="/collection" element={<RequireAuth><Collection /></RequireAuth>} />
       <Route path="/pack/open" element={<RequireAuth><PackOpen /></RequireAuth>} />
       <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
