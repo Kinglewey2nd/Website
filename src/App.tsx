@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import Profile from './components/Profile';
@@ -16,31 +15,38 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
   return user ? children : <Navigate to="/login" />;
 };
 
-const NotFound = () => <div style={{ color: "white", textAlign: "center", paddingTop: "2rem" }}>Page Not Found</div>;
+const NotFound = () => (
+  <div style={{ color: 'white', textAlign: 'center', paddingTop: '2rem' }}>
+    Page Not Found
+  </div>
+);
 
 const App: React.FC = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth(app);
-    onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
         navigate('/menu');
+      } else {
+        navigate('/login');
       }
     });
+    return () => unsubscribe(); // Clean up listener on unmount
   }, [navigate]);
 
   return (
     <Routes>
-        <Route path="/profile" element={<Profile />} />
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/menu" element={<RequireAuth><MainMenu /></RequireAuth>} />
       <Route path="/collection" element={<RequireAuth><Collection /></RequireAuth>} />
       <Route path="/pack/open" element={<RequireAuth><PackOpen /></RequireAuth>} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
