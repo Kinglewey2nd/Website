@@ -41,10 +41,7 @@ export default function Login() {
         style={{ margin: '0.5rem', padding: '0.5rem' }}
       />
       <button onClick={handleLogin} style={{ padding: '0.5rem 1rem', marginTop: '1rem' }}>Log In</button>
-      <button onClick={() => navigate('/menu')} style={{ marginTop: '0.5rem', background: 'transparent', border: '1px solid white', color: 'white' }}>
-        Continue as Guest
-      </button>
-      <p style={{ marginTop: '1rem' }}>Forgot password?</p>
+            <p style={{ marginTop: '1rem' }}>Forgot password?</p>
     </div>
   );
 }

@@ -37,36 +37,49 @@ export default function PackOpen() {
     openPack();
   }, []);
 
+  const getCardImage = (rarity: string) => {
+    return `/card-art/${rarity.toLowerCase()}.png`;
+  };
+
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Open Your Pack</h2>
-      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+    <div style={{
+      minHeight: '100vh',
+      background: 'black',
+      color: 'white',
+      padding: '2rem',
+      textAlign: 'center'
+    }}>
+      <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Open Your Pack</h2>
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         {cards.map((card, i) => (
           <div
             key={i}
             onClick={() => revealCard(i)}
             style={{
-              width: "120px",
-              height: "180px",
-              backgroundColor: "#111",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontSize: "0.8rem",
-              cursor: "pointer",
-              border: "2px solid #444",
-              transition: "all 0.3s ease",
+              width: '140px',
+              height: '200px',
+              borderRadius: '12px',
+              backgroundColor: '#222',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              boxShadow: revealed.includes(i) ? '0 0 12px gold' : '0 0 6px #444'
             }}
           >
-            {revealed.includes(i) ? card.name : "Click to Reveal"}
+            {revealed.includes(i) ? (
+              <img
+                src={getCardImage(card.rarity)}
+                alt={card.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span style={{ fontSize: '0.8rem', color: '#ccc' }}>Click to Reveal</span>
+            )}
           </div>
         ))}
       </div>
-      <button onClick={openPack} style={{ marginTop: "2rem", padding: "0.6rem 1.2rem", fontSize: "1rem" }}>
-        Open Another Pack
-      </button>
     </div>
   );
 }
