@@ -7,7 +7,7 @@ import MainMenu from './components/MainMenu';
 import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
 import Profile from './components/Profile';
-import { AuthProvider } from './useAuth'; // or './contexts/AuthContext' if you move it
+import { AuthProvider, useAuth } from './useAuth';
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
@@ -26,6 +26,7 @@ const NotFound = () => (
 const App: React.FC = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/menu" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
