@@ -1,3 +1,4 @@
+
 /* Global styles */
 body {
   margin: 0;
@@ -21,7 +22,6 @@ body {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 
 /* Buttons */
 button {
@@ -49,6 +49,7 @@ button {
   height: 180px;
   perspective: 1000px;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Inner card flip mechanics */
@@ -80,6 +81,13 @@ button {
   font-size: 2rem;
 }
 
+/* Front of the card */
+.card-front {
+  background: #333;
+  color: #fff;
+  font-weight: bold;
+}
+
 /* Back of the card */
 .card-back {
   background: #111;
@@ -92,4 +100,18 @@ button {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+}
+
+/* Fallback image style if image fails to load */
+.card-back img:before {
+  content: "❌ Image not found";
+  display: block;
+  color: #f00;
+  font-size: 0.8rem;
+  padding: 1rem;
+}
+
+.card-back div {
+  margin-top: 0.5rem;
+  font-size: 1rem;
 }
