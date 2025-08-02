@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 const Profile: React.FC = () => {
   const [xp, setXp] = useState(0);
   const auth = getAuth();
   const user = auth.currentUser;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchXP = async () => {
@@ -27,7 +29,14 @@ const Profile: React.FC = () => {
       <h2>Welcome, {user?.displayName}</h2>
       <p>XP: {xp}</p>
     </div>
+    
+    <button onClick={() => navigate('/menu')} className="back-button">
+  Back to Menu
+</button>
+
   );
 };
+
+
 
 export default Profile;
