@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import Login from './components/Login';
@@ -17,7 +16,11 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
   return user ? children : <Navigate to="/login" />;
 };
 
-const NotFound = () => <div style={{ color: "white", textAlign: "center", paddingTop: "2rem" }}>Page Not Found</div>;
+const NotFound = () => (
+  <div style={{ color: 'white', textAlign: 'center', paddingTop: '2rem' }}>
+    Page Not Found
+  </div>
+);
 
 const App: React.FC = () => {
   const [user, setUser] = useState(null);
@@ -26,10 +29,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
+      setUser(user);
+      const path = window.location.pathname;
+      if (user && path === '/') {
         navigate('/menu');
-      } else {
+      } else if (!user && path === '/') {
         navigate('/login');
       }
     });
