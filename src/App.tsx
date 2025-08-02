@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
 import ForgotPassword from './components/ForgotPassword';
-import Main from './components/Main'; // ✅ Was "MainMenu", changed to "Main" (your actual file name)
+import Main from './components/main'; // ✅ Was "MainMenu", changed to "Main" (your actual file name)
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { app } from './firebase';
 
