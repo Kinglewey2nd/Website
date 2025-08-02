@@ -1,5 +1,6 @@
 import React
-import Header from '../components/Header';, { useEffect, useState } from 'react';
+import Header from '../components/Header';
+import { useEffect, useState } from 'react';
 
 interface Card {
   id: string;
