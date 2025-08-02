@@ -2,7 +2,6 @@ import React from 'react';
 import React from 'react';
 import Header from '../components/Header';
 
-}
 export default function Profile() {
   return (
     <>
@@ -12,4 +11,3 @@ export default function Profile() {
     </div>
     </>
   );
-}
