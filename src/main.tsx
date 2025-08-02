@@ -4,10 +4,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import PackPage from './pages/PackPage';
 import PackOpening from './components/PackOpening';
+import LoginPage from './pages/LoginPage';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <Routes>
+      <Route path='/login' element={<LoginPage />} />
       <Route path="/" element={<App />} />
       <Route path="/pack" element={<PackPage />} />
       <Route path="/pack/open" element={<PackOpening />} />
