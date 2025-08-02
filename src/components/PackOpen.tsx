@@ -18,6 +18,7 @@ const PackOpen: React.FC = () => {
   const [flipped, setFlipped] = useState(Array(5).fill(false));
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const navigate = useNavigate();
 
   const handleOpen = async () => {
     if (opened) return;
@@ -67,12 +68,13 @@ const PackOpen: React.FC = () => {
         ))}
       </div>
     </div>
-  );
-};
-
 <button onClick={() => navigate('/menu')} className="back-button"> 
   Back to Menu
 </button>
+  );
+};
+
+
 
 
 export default PackOpen;
