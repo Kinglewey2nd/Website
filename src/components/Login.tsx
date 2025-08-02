@@ -20,16 +20,6 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/menu');
-    } catch (error: any) {
-      console.error('Google login error:', error);
-      setError('Google login failed.');
-    }
-  };
-
   return (
     <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
       <h2>Login</h2>
@@ -40,8 +30,6 @@ const Login: React.FC = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ padding: '0.5rem', marginBottom: '1rem' }}
           />
         </div>
         <div>
@@ -50,28 +38,14 @@ const Login: React.FC = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ padding: '0.5rem', marginBottom: '1rem' }}
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" style={{ padding: '0.5rem 1rem' }}>
-          Login
+        <button type="submit">Login</button>
+        <button type="button" onClick={() => signInWithPopup(auth, googleProvider)}>
+          Sign in with Google
         </button>
       </form>
-
-      <button
-        onClick={handleGoogleLogin}
-        className="bg-red-600 text-white px-4 py-2 rounded mt-4"
-      >
-        Sign in with Google
-      </button>
-
-      <p style={{ marginTop: '1rem' }}>
-        <Link to="/forgot-password" style={{ color: 'lightblue' }}>
-          Forgot Password?
-        </Link>
-      </p>
+      {error && <p>{error}</p>}
     </div>
   );
 };
