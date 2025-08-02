@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
 import ForgotPassword from './components/ForgotPassword';
-import Main from './components/Main'; // ✅ Was "MainMenu", changed to "Main" (your actual file name)
+import Main from './components/main'; // ✅ Was "MainMenu", changed to "Main" (your actual file name)
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { app } from './firebase';
 
@@ -48,7 +48,7 @@ const App: React.FC = () => {
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/menu" element={<RequireAuth><Main /></RequireAuth>} />
+      <Route path="/menu" element={<RequireAuth><main /></RequireAuth>} />
       <Route path="/collection" element={<RequireAuth><Collection /></RequireAuth>} />
       <Route path="/pack/open" element={<RequireAuth><PackOpen /></RequireAuth>} />
       <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
