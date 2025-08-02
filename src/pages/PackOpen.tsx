@@ -44,10 +44,16 @@ export default function PackOpen() {
   const revealCard = (i: number) => {
     if (!revealed.includes(i)) {
       setRevealed([...revealed, i]);
+      playSoundForRarity(cards[i].rarity);
     }
   };
 
-  useEffect(() => {
+  
+  const playSoundForRarity = (rarity: string) => {
+    const audio = new Audio(`/audio/${rarity.toLowerCase()}.mp3`);
+    audio.play().catch((e) => console.error("Audio failed:", e));
+  };
+useEffect(() => {
     openPack();
   }, []);
 
