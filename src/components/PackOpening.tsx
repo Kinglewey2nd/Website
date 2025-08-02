@@ -36,9 +36,9 @@ export default function PackOpening({ userId = "demo-user", onFinish = () => {} 
         {cards.map((card, i) => (
           <div
             key={i}
-            className={\`card-flip \${revealed.includes(i) ? "revealed" : ""} rarity-\${card.rarity.toLowerCase()}\`}
+            className={`card-flip ${revealed.includes(i) ? "revealed" : ""} rarity-${card.rarity.toLowerCase()}`}
             onClick={() => revealCard(i)}
-            style={{ transitionDelay: \`\${i * 0.2}s\` }}
+            style={{ transitionDelay: `${i * 0.2}s` }}
           >
             <div className="card-inner">
               <div className="card-front" />
