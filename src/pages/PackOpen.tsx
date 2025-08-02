@@ -14,7 +14,6 @@ const generateCards = (): Card[] => {
     id: `Kaelen-${Date.now()}`,
     name: 'Kaelen',
     rarity: 'Mythic'
-  };
 
   const cards: Card[] = [mythicCard];
 
@@ -28,8 +27,6 @@ const generateCards = (): Card[] => {
   }
 
   return cards;
-};
-};
 
 export default function PackOpen() {
   const [cards, setCards] = useState<Card[]>([]);
@@ -43,27 +40,23 @@ export default function PackOpen() {
       ...newCards
     ]));
     setRevealed([]);
-  };
 
   const revealCard = (i: number) => {
     if (!revealed.includes(i)) {
       setRevealed([...revealed, i]);
       playSoundForRarity(cards[i].rarity);
     }
-  };
 
   
   const playSoundForRarity = (rarity: string) => {
     const audio = new Audio(`/audio/${rarity.toLowerCase()}.mp3`);
     audio.play().catch((e) => console.error("Audio failed:", e));
-  };
 useEffect(() => {
     openPack();
   }, []);
 
   const getCardImage = (rarity: string) => {
     return `/card-art/${rarity.toLowerCase()}.png`;
-  };
 
   return (
     <>
