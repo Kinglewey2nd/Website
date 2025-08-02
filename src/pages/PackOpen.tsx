@@ -1,5 +1,4 @@
-import '../styles/cards.css';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Card {
   id: string;
@@ -19,7 +18,7 @@ const generateCards = (): Card[] => {
   });
 };
 
-export default function PackOpening() {
+export default function PackOpen() {
   const [cards, setCards] = useState<Card[]>([]);
   const [revealed, setRevealed] = useState<number[]>([]);
 
@@ -41,11 +40,10 @@ export default function PackOpening() {
   return (
     <div style={{ padding: "2rem" }}>
       <h2>Open Your Pack</h2>
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
         {cards.map((card, i) => (
           <div
             key={i}
-            className={`card-flip ${revealed.includes(i) ? "revealed" : ""} rarity-${card.rarity}`}
             onClick={() => revealCard(i)}
             style={{
               width: "120px",
