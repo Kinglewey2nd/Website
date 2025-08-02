@@ -23,20 +23,20 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
-    } catch (error) {
+    } catch (error: any) {
+      console.error(error);
       alert("Login failed: " + error.message);
     }
   };
 
   return (
-    <div style={{
+    <div className="auth-page" style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       height: '100vh',
-      color: 'white',
-      textShadow: '1px 1px 2px black'
+      color: 'white'
     }}>
       <h2>Login</h2>
       <input
@@ -60,13 +60,11 @@ const Login: React.FC = () => {
         borderRadius: '5px',
         color: 'white'
       }}>Login</button>
-    
       <div style={{ marginTop: '1rem' }}>
         <a href="/signup" style={{ color: '#3b82f6', marginRight: '1rem' }}>Create Account</a>
         <a href="/reset-password" style={{ color: '#3b82f6' }}>Forgot Password?</a>
       </div>
     </div>
-    
   );
 };
 
