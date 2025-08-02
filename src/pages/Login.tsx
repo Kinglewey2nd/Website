@@ -53,11 +53,22 @@ const Login: React.FC = () => {
         </button>
       </form>
       <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Don’t have an account?{' '}
-        <a href="/signup" style={{ color: '#007bff', textDecoration: 'underline' }}>
-          Create one
-        </a>
+        Don’t have an account?
       </p>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5rem' }}>
+        <a
+          href="/signup"
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            borderRadius: '4px',
+            textDecoration: 'none',
+          }}
+        >
+          Create Account
+        </a>
+      </div>
     </div>
   );
 };
