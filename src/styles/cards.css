@@ -1,0 +1,23 @@
+
+.card-flip {
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  cursor: pointer;
+}
+
+.card-flip.revealed {
+  transform: rotateY(180deg);
+}
+
+.rarity-Mythic {
+  box-shadow: 0 0 20px 5px gold;
+}
+.rarity-Epic {
+  box-shadow: 0 0 15px 4px purple;
+}
+.rarity-Rare {
+  box-shadow: 0 0 10px 3px royalblue;
+}
+.rarity-Common {
+  box-shadow: 0 0 6px 2px gray;
+}
