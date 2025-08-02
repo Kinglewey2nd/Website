@@ -4,6 +4,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
+
+console.log("✅ Main menu mounted");
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Router>
@@ -11,3 +14,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </Router>
   </React.StrictMode>
 );
+
