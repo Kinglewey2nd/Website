@@ -1,22 +1,8 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import CreateAccount from './pages/CreateAccount';
-import Collection from './pages/Collection';
-import Packs from './pages/Packs';
-
-const App: React.FC = () => {
+export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<CreateAccount />} />
-        <Route path="/collection" element={<Collection />} />
-        <Route path="/packs" element={<Packs />} />
-      </Routes>
-    </Router>
+    <div className="text-white text-center p-10">
+      <h1 className="text-4xl">Welcome to SpellGrave</h1>
+      <p className="mt-4">Open packs, collect cards, level up!</p>
+    </div>
   );
-};
-
-export default App;
+}
