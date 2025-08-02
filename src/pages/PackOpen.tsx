@@ -1,85 +1,110 @@
-
 import React, { useEffect, useState } from 'react';
-import './PackOpen.css';
 import Header from '../components/Header';
-import CardComponent from '../components/CardComponent';
-import { getAuth } from 'firebase/auth';
-import { doc, getFirestore, updateDoc, arrayUnion } from 'firebase/firestore';
-import cardData from '../data/cardData.json';
 
 interface Card {
-  id: number;
+  id: string;
   name: string;
-  type: string;
-  health: number;
-  defense: number;
-  speed: number;
   rarity: string;
-  imageUrl: string;
 }
 
-function generateCards(): Card[] {
+const generateCards = (): Card[] => {
+  const rarities = ['Common', 'Rare', 'Epic', 'Mythic'];
   const mythicCard: Card = {
-    id: 999,
+    id: `Kaelen-${Date.now()}`,
     name: 'Kaelen',
-    type: 'Rogue',
-    health: 20,
-    defense: 1,
-    speed: 5,
-    rarity: 'Mythic',
-    imageUrl: '/cards/ff0052ba-f417-45d0-a985-ff7635c4b2c8.png',
+    rarity: 'Mythic'
   };
 
   const cards: Card[] = [mythicCard];
 
   for (let i = 1; i < 5; i++) {
-    const randomIndex = Math.floor(Math.random() * cardData.length);
-    cards.push(cardData[randomIndex]);
+    const rarity = rarities[Math.floor(Math.random() * rarities.length)];
+    cards.push({
+      id: `${rarity}-${i}-${Date.now()}`,
+      name: `${rarity} Card ${i + 1}`,
+      rarity
+    });
   }
 
   return cards;
-}
+};
 
 export default function PackOpen() {
   const [cards, setCards] = useState<Card[]>([]);
   const [revealed, setRevealed] = useState<number[]>([]);
-  const auth = getAuth();
-  const db = getFirestore();
 
-  useEffect(() => {
+  const openPack = () => {
     const newCards = generateCards();
     setCards(newCards);
+    localStorage.setItem('spellgrave-collection', JSON.stringify([
+      ...(JSON.parse(localStorage.getItem('spellgrave-collection') || '[]')),
+      ...newCards
+    ]));
+    setRevealed([]);
+  };
 
-    const user = auth.currentUser;
-    if (user) {
-      const userRef = doc(db, 'users', user.uid);
-      const cardIds = newCards.map(card => card.id);
-      updateDoc(userRef, {
-        collection: arrayUnion(...cardIds),
-      });
-    }
-  }, []);
-
-  const revealCard = (index: number) => {
-    if (!revealed.includes(index)) {
-      setRevealed([...revealed, index]);
+  const revealCard = (i: number) => {
+    if (!revealed.includes(i)) {
+      setRevealed([...revealed, i]);
+      playSoundForRarity(cards[i].rarity);
     }
   };
 
+  const playSoundForRarity = (rarity: string) => {
+    const audio = new Audio(`/audio/${rarity.toLowerCase()}.mp3`);
+    audio.play().catch((e) => console.error("Audio failed:", e));
+  };
+
+  useEffect(() => {
+    openPack();
+  }, []);
+
+  const getCardImage = (rarity: string) => {
+    return `/card-art/${rarity.toLowerCase()}.png`;
+  };
+
   return (
-    <div className="pack-open-page">
+    <>
       <Header />
-      <h2 className="pack-title">You opened a pack!</h2>
-      <div className="cards-container">
-        {cards.map((card, index) => (
-          <CardComponent
-            key={index}
-            card={card}
-            revealed={revealed.includes(index)}
-            onClick={() => revealCard(index)}
-          />
-        ))}
+      <div style={{
+        minHeight: '100vh',
+        background: 'black',
+        color: 'white',
+        padding: '2rem',
+        textAlign: 'center'
+      }}>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Open Your Pack</h2>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {cards.map((card, i) => (
+            <div
+              key={i}
+              onClick={() => revealCard(i)}
+              style={{
+                width: '140px',
+                height: '200px',
+                borderRadius: '12px',
+                backgroundColor: '#222',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                cursor: 'pointer',
+                boxShadow: revealed.includes(i) ? '0 0 12px gold' : '0 0 6px #444'
+              }}
+            >
+              {revealed.includes(i) ? (
+                <img
+                  src={getCardImage(card.rarity)}
+                  alt={card.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span style={{ fontSize: '0.8rem', color: '#ccc' }}>Click to Reveal</span>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
