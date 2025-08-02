@@ -31,4 +31,9 @@ const Collection: React.FC = () => {
   );
 };
 
+<button onClick={() => navigate('/menu')} className="back-button">
+  Back to Menu
+</button>
+
+
 export default Collection;
