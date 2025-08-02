@@ -14,6 +14,7 @@ const generateCards = (): Card[] => {
     id: `Kaelen-${Date.now()}`,
     name: 'Kaelen',
     rarity: 'Mythic'
+};
 
   const cards: Card[] = [mythicCard];
 
