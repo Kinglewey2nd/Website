@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 
+// ✅ Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDOMBhE3JTlh3fLEC98nXy0YWtsc2cpFAE",
   authDomain: "spellgrave-f2e30.firebaseapp.com",
@@ -12,16 +13,20 @@ const firebaseConfig = {
   measurementId: "G-FKXDG97B9Y"
 };
 
+// ✅ Firebase app and auth instance
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// ✅ Context shape
 interface AuthContextType {
   user: User | null;
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
+// ✅ Context with undefined fallback (no default value)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// ✅ Provider that updates on auth state changes
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,4 +48,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// ✅ Safe hook that throws a clean error if misused
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
