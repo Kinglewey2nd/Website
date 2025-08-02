@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
@@ -9,6 +8,7 @@ const Collection: React.FC = () => {
   const [cards, setCards] = useState<string[]>([]);
   const auth = getAuth();
   const user = auth.currentUser;
+  const navigate = useNavigate(); // ✅ Now inside component — valid
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -28,15 +28,12 @@ const Collection: React.FC = () => {
       {cards.map((card, idx) => (
         <div key={idx}>{card}</div>
       ))}
+
+      <button onClick={() => navigate('/menu')} className="back-button">
+        Back to Menu
+      </button>
     </div>
   );
 };
-
-
-const navigate = useNavigate();
-<button onClick={() => navigate('/menu')} className="back-button">
-  Back to Menu
-</button>
-
 
 export default Collection;
