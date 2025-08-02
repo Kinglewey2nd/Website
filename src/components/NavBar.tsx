@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
 
 export default function NavBar() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -29,7 +29,7 @@ export default function NavBar() {
         <Link to="/profile" className="hover:text-purple-300 transition">🧑 Profile</Link>
         {user ? (
           <>
-            <span className="text-sm text-purple-400 ml-4">Hi, {user.displayName || user.email} 👋</span>
+            <span className="text-sm text-purple-400 ml-4">Hi, {user.displayName || user.email || "User"} 👋</span>
             <button onClick={handleLogout} className="ml-2 underline text-red-300 hover:text-red-500 text-sm">Logout</button>
           </>
         ) : (
