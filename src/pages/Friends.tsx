@@ -1,12 +1,12 @@
 import React from 'react';
-import Header from '../components/Header';
 
-export default function Friends() {
+const Friends = () => {
   return (
     <>
-      <Header />
-    <div style={{ color: 'white', textAlign: 'center', paddingTop: '10vh' }}>
-      <h1>Friends Page (Coming Soon)</h1>
-    </div>
+      <h1 className="text-2xl font-bold text-white mb-4">Friends & Trading</h1>
+      <p className="text-white">Coming soon: Add friends and trade cards in real-time!</p>
     </>
   );
+};
+
+export default Friends;
