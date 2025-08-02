@@ -26,3 +26,6 @@ export default function Header() {
       👤 {username}
     </div>
   );
+};
+
+export default Header;
