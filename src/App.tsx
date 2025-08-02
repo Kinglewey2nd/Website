@@ -1,21 +1,22 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import CreateAccount from './pages/CreateAccount';
 import Collection from './pages/Collection';
-import PackOpener from './pages/PackOpener';
+import Packs from './pages/Packs';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<CreateAccount />} />
         <Route path="/collection" element={<Collection />} />
-        <Route path="/packs" element={<PackOpener />} />
+        <Route path="/packs" element={<Packs />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
