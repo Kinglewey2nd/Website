@@ -14,5 +14,14 @@ const MainMenu: React.FC = () => {
     </div>
   );
 };
-
 export default MainMenu;
+
+import { getAuth, signOut } from 'firebase/auth';
+
+const handleLogout = async () => {
+  const auth = getAuth();
+  await signOut(auth);
+  navigate('/login');
+};
+
+<button onClick={handleLogout}>Logout</button>
