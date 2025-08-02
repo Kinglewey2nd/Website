@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 const Collection: React.FC = () => {
   const [cards, setCards] = useState<string[]>([]);
