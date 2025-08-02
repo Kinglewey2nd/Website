@@ -9,6 +9,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    ssr: false, // ⛔ Prevent Vite from running components in SSR context
+  },
   server: {
     host: true,
   },
