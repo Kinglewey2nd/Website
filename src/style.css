@@ -1,9 +1,0 @@
-body { margin: 0; font-family: 'Segoe UI', sans-serif; background: url('/assets/fantasy-bg.jpg') center/cover no-repeat fixed; color: white; }
-
-body {
-  background-image: url("/assets/background.jpg"); /* note the slash at the start */
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-}
