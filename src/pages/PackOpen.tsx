@@ -8,13 +8,23 @@ interface Card {
 
 const generateCards = (): Card[] => {
   const rarities = ['Common', 'Rare', 'Epic', 'Mythic'];
-  return Array.from({ length: 5 }, (_, i) => {
+  const mythicCard: Card = {
+    id: `Kaelen-${Date.now()}`,
+    name: 'Kaelen',
+    rarity: 'Mythic',
+  };
+
+  const cards: Card[] = [mythicCard];
+  for (let i = 1; i < 5; i++) {
     const rarity = rarities[Math.floor(Math.random() * rarities.length)];
-    return {
+    cards.push({
       id: `${rarity}-${i}-${Date.now()}`,
       name: `${rarity} Card ${i + 1}`,
-      rarity
-    };
+      rarity,
+    });
+  }
+  return cards;
+};
   });
 };
 
@@ -23,7 +33,12 @@ export default function PackOpen() {
   const [revealed, setRevealed] = useState<number[]>([]);
 
   const openPack = () => {
-    setCards(generateCards());
+    const newCards = generateCards();
+    setCards(newCards);
+    localStorage.setItem('spellgrave-collection', JSON.stringify([
+      ...(JSON.parse(localStorage.getItem('spellgrave-collection') || '[]')),
+      ...newCards
+    ]));
     setRevealed([]);
   };
 
