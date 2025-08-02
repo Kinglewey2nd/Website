@@ -1,30 +1,20 @@
+// src/components/main.tsx
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
-import './index.css';
+import { useNavigate } from 'react-router-dom';
 
-
-import React from 'react';
 const Main: React.FC = () => {
-  console.log("✅ Main menu mounted");
+  const navigate = useNavigate();
 
   return (
-    <div style={{ color: 'white', padding: '4rem', textAlign: 'center' }}>
-      <h1>Main Menu Loaded</h1>
-      <p>If you see this, routing and auth are working.</p>
+    <div style={{ textAlign: 'center', paddingTop: '5rem' }}>
+      <h1 style={{ fontSize: '3rem', color: 'white' }}>SpellGrave</h1>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
+        <button onClick={() => navigate('/profile')}>View Profile</button>
+        <button onClick={() => navigate('/collection')}>Go to Collection</button>
+        <button onClick={() => navigate('/pack/open')}>Open Pack</button>
+      </div>
     </div>
   );
 };
 
 export default Main;
-
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
-  </React.StrictMode>
-);
-
