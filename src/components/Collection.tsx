@@ -8,7 +8,7 @@ const Collection: React.FC = () => {
   const [cards, setCards] = useState<string[]>([]);
   const auth = getAuth();
   const user = auth.currentUser;
-  const navigate = useNavigate(); // ✅ Now inside component — valid
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -28,8 +28,7 @@ const Collection: React.FC = () => {
       {cards.map((card, idx) => (
         <div key={idx}>{card}</div>
       ))}
-
-      <button onClick={() => navigate('/menu')} className="back-button">
+      <button onClick={() => navigate('/menu')} className="back-button" style={{ marginTop: '2rem' }}>
         Back to Menu
       </button>
     </div>
