@@ -30,38 +30,41 @@ export default function PackOpening({ userId = "demo-user", onFinish = () => {} 
   };
 
   return (
-    <div className="pack-opening-container text-white text-center">
-      <h1 className="text-3xl mb-6">Pack Opening</h1>
-      <div className="card-grid flex justify-center gap-4 flex-wrap">
+    <div className="bg-gradient-to-b from-black via-gray-900 to-black min-h-screen px-4 py-12 text-white">
+      <h1 className="text-4xl font-bold text-center mb-8 text-purple-300 drop-shadow-lg">Open Your Pack</h1>
+      <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
         {cards.map((card, i) => (
           <div
             key={i}
-            className={`card-flip ${revealed.includes(i) ? "revealed" : ""} rarity-${card.rarity.toLowerCase()}`}
+            className={\`card-flip \${revealed.includes(i) ? "revealed" : ""} rarity-\${card.rarity.toLowerCase()}\`}
             onClick={() => revealCard(i)}
+            style={{ transitionDelay: \`\${i * 0.2}s\` }}
           >
             <div className="card-inner">
-              <div className="card-front"></div>
+              <div className="card-front" />
               <div className="card-back">
-                <img src={card.image} alt={card.name} className="w-full rounded" />
-                <p>{card.name}</p>
+                <img src={card.image} alt={card.name} className="w-full rounded shadow-lg" />
+                <p className="mt-2 font-semibold">{card.name}</p>
               </div>
             </div>
           </div>
         ))}
       </div>
-      {revealed.length < 5 ? (
-        <button onClick={revealAll} className="mt-6 btn bg-blue-500 text-white px-4 py-2 rounded">
-          Reveal All
-        </button>
-      ) : (
-        <button onClick={handleSave} className="mt-6 btn bg-green-500 text-white px-4 py-2 rounded">
-          Add to Collection
-        </button>
-      )}
-      <div className="mt-6">
-        <Link to="/pack" className="text-blue-300 hover:text-blue-500 underline">
-          ← Back to Pack Page
-        </Link>
+      <div className="text-center mt-10">
+        {revealed.length < 5 ? (
+          <button onClick={revealAll} className="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-full text-lg shadow-md transition">
+            Reveal All
+          </button>
+        ) : (
+          <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 px-8 py-3 rounded-full text-lg shadow-md transition">
+            Add to Collection
+          </button>
+        )}
+        <div className="mt-6">
+          <Link to="/pack" className="text-sm text-purple-400 hover:text-purple-300 underline">
+            ← Back to Pack Page
+          </Link>
+        </div>
       </div>
     </div>
   );
