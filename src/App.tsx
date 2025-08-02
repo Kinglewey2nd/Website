@@ -7,7 +7,7 @@ import MainMenu from './components/MainMenu';
 import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
 import Profile from './components/Profile';
-import { useAuth } from './contexts/AuthContext';
+import { useAuth } from './useAuth';
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
