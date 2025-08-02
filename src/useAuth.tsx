@@ -23,10 +23,10 @@ interface AuthContextType {
   loading: boolean;
 }
 
-// ✅ Context with undefined fallback (no default value)
+// ✅ Context with undefined fallback
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// ✅ Provider that updates on auth state changes
+// ✅ AuthProvider
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,9 +48,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// ✅ Safe hook that throws a clean error if misused
+// ✅ useAuth hook with safety + debug
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  console.log("Calling useAuth - context is:", context); // Debug line
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
