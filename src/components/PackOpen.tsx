@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { app } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
 const cards = [
   { name: 'Inferno Dragon', image: '/cards/inferno-dragon.png' },
