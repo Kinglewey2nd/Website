@@ -60,3 +60,7 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+  <button onClick={handleGoogleLogin} className="bg-red-600 text-white px-4 py-2 rounded mt-4">
+    Sign in with Google
+  </button>
