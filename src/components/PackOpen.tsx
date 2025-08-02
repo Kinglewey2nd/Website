@@ -1,6 +1,5 @@
 // src/components/PackOpen.tsx
 import React, { useState } from 'react';
-import './index.css';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { app } from '../firebase';
