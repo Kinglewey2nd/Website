@@ -14,7 +14,7 @@ export const uploadCardData = async ({
   health,
   rarity,
   imageUrl,
-  foilUrl,
+  foilUrl = '',
 }: {
   name: string;
   type: string;
@@ -33,7 +33,7 @@ export const uploadCardData = async ({
     health,
     rarity,
     imageUrl,
-    foilUrl: foilUrl || '',
+    foilUrl,
     createdAt: Timestamp.now(),
   });
 };
