@@ -29,6 +29,10 @@ const MainMenu: React.FC = () => {
         <button onClick={() => navigate('/cards')}>🃏 View All Cards</button>
         <button onClick={handleLogout}>🚪 Logout</button>
       </div>
+
+      <div style={{ marginTop: '3rem', fontSize: '0.85rem', opacity: 0.6 }}>
+        Build 0.01
+      </div>
     </div>
   );
 };
