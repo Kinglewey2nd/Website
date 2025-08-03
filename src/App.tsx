@@ -10,6 +10,8 @@ import Profile from './components/Profile';
 import CardCreator from './components/CardCreator';
 import CardGallery from './components/CardGallery'; // ✅ NEW
 import { AuthProvider, useAuth } from './useAuth';
+import CardGallery from './components/CardGallery';
+
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
@@ -38,6 +40,7 @@ const App: React.FC = () => {
       <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
       <Route path="/card-creator" element={<RequireAuth><CardCreator /></RequireAuth>} />
       <Route path="/cards" element={<RequireAuth><CardGallery /></RequireAuth>} /> {/* ✅ NEW */}
+      <Route path="/cards" element={<RequireAuth><CardGallery /></RequireAuth>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
