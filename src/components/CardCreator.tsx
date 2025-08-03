@@ -27,12 +27,7 @@ const CardCreator: React.FC = () => {
   const [rarity, setRarity] = useState<'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic' | 'Celestial'>('Common');
 
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [foilFile, setFoilFile] = useState<File | null>(null);
-  const [useFoil, setUseFoil] = useState(false);
-
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
-  const [foilPreviewUrl, setFoilPreviewUrl] = useState('');
-
   const [saveStatus, setSaveStatus] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -45,7 +40,6 @@ const CardCreator: React.FC = () => {
       setHealth(editingCard.health.toString());
       setRarity(editingCard.rarity);
       setImagePreviewUrl(editingCard.imageUrl || '');
-      setFoilPreviewUrl(editingCard.foilUrl || '');
     }
   }, [editingCard]);
 
@@ -53,23 +47,11 @@ const CardCreator: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > MAX_FILE_SIZE) {
-        alert('Regular image is too large. Max size is 10MB.');
+        alert('Image is too large. Max size is 10MB.');
         return;
       }
       setImageFile(file);
       setImagePreviewUrl(URL.createObjectURL(file));
-    }
-  };
-
-  const handleFoilSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > MAX_FILE_SIZE) {
-        alert('Foil image is too large. Max size is 10MB.');
-        return;
-      }
-      setFoilFile(file);
-      setFoilPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -90,20 +72,12 @@ const CardCreator: React.FC = () => {
     try {
       const storage = getStorage(app);
       let imageUrl = imagePreviewUrl;
-      let foilUrl = foilPreviewUrl;
 
       if (imageFile && imageFile.size > 0) {
         const cleanName = sanitizeFileName(imageFile.name);
         const imageRef = ref(storage, `cards/${Date.now()}_${cleanName}`);
         const snap = await uploadBytes(imageRef, imageFile);
         imageUrl = await getDownloadURL(snap.ref);
-      }
-
-      if (foilFile && foilFile.size > 0) {
-        const cleanName = sanitizeFileName(foilFile.name);
-        const foilRef = ref(storage, `cards/${Date.now()}_${cleanName}`);
-        const snap = await uploadBytes(foilRef, foilFile);
-        foilUrl = await getDownloadURL(snap.ref);
       }
 
       const cardData = {
@@ -114,7 +88,6 @@ const CardCreator: React.FC = () => {
         health: parseInt(health),
         rarity,
         imageUrl,
-        foilUrl,
       };
 
       if (!editingCard) {
@@ -140,10 +113,7 @@ const CardCreator: React.FC = () => {
         setHealth('');
         setRarity('Common');
         setImageFile(null);
-        setFoilFile(null);
         setImagePreviewUrl('');
-        setFoilPreviewUrl('');
-        setUseFoil(false);
       }
 
       setTimeout(() => {
@@ -152,7 +122,7 @@ const CardCreator: React.FC = () => {
       }, 1500);
     } catch (err) {
       console.error('Upload failed:', err);
-      setSaveStatus('❌ Upload failed — check your image files and try again.');
+      setSaveStatus('❌ Upload failed — check your image file and try again.');
     } finally {
       setSaving(false);
     }
@@ -185,13 +155,8 @@ const CardCreator: React.FC = () => {
         <option value="Celestial">🌈 Celestial</option>
       </select><br /><br />
 
-      <label>Upload Regular Image</label><br />
-      <input type="file" accept="image/*" onChange={handleImageSelect} /><br />
-      <label>Upload Foil Image (Optional)</label><br />
-      <input type="file" accept="image/*" onChange={handleFoilSelect} /><br />
-      <button onClick={() => setUseFoil(!useFoil)}>
-        {useFoil ? 'Use Regular Art' : 'Use Foil Art'}
-      </button><br /><br />
+      <label>Upload Image</label><br />
+      <input type="file" accept="image/*" onChange={handleImageSelect} /><br /><br />
 
       <button onClick={handleSave} disabled={saving}>
         {saving ? 'Saving...' : `💾 ${editingCard ? 'Update' : 'Save'} Card`}
