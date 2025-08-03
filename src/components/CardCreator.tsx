@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../useAuth';
-import CardPreview from './CardPreview';
 import { uploadCardData, updateCardData } from './firebaseUtils';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -168,57 +167,41 @@ const CardCreator: React.FC = () => {
     );
   }
 
-  const shouldRenderImage = useFoil
-    ? foilPreviewUrl && foilFile
-    : imagePreviewUrl && imageFile;
-
   return (
-    <div style={{ display: 'flex', gap: '3rem', padding: '2rem', color: 'white' }}>
-      <div>
-        <h2>{editingCard ? 'Edit Card' : 'Create a New Card'}</h2>
-        <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} /><br />
-        <input placeholder="Type" value={type} onChange={e => setType(e.target.value)} /><br />
-        <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} /><br />
-        <input type="number" placeholder="Attack" value={attack} onChange={e => setAttack(e.target.value)} /><br />
-        <input type="number" placeholder="Health" value={health} onChange={e => setHealth(e.target.value)} /><br />
-        <select value={rarity} onChange={e => setRarity(e.target.value as any)}>
-          <option value="Common">🔹 Common</option>
-          <option value="Uncommon">🔸 Uncommon</option>
-          <option value="Rare">🔷 Rare</option>
-          <option value="Epic">🟣 Epic</option>
-          <option value="Legendary">🟡 Legendary</option>
-          <option value="Mythic">🔥 Mythic</option>
-          <option value="Celestial">🌈 Celestial</option>
-        </select><br /><br />
+    <div style={{ maxWidth: '600px', margin: '2rem auto', color: 'white' }}>
+      <h2>{editingCard ? 'Edit Card' : 'Create a New Card'}</h2>
+      <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} /><br />
+      <input placeholder="Type" value={type} onChange={e => setType(e.target.value)} /><br />
+      <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} /><br />
+      <input type="number" placeholder="Attack" value={attack} onChange={e => setAttack(e.target.value)} /><br />
+      <input type="number" placeholder="Health" value={health} onChange={e => setHealth(e.target.value)} /><br />
+      <select value={rarity} onChange={e => setRarity(e.target.value as any)}>
+        <option value="Common">🔹 Common</option>
+        <option value="Uncommon">🔸 Uncommon</option>
+        <option value="Rare">🔷 Rare</option>
+        <option value="Epic">🟣 Epic</option>
+        <option value="Legendary">🟡 Legendary</option>
+        <option value="Mythic">🔥 Mythic</option>
+        <option value="Celestial">🌈 Celestial</option>
+      </select><br /><br />
 
-        <label>Upload Regular Image</label><br />
-        <input type="file" accept="image/*" onChange={handleImageSelect} /><br />
-        <label>Upload Foil Image (Optional)</label><br />
-        <input type="file" accept="image/*" onChange={handleFoilSelect} /><br />
-        <button onClick={() => setUseFoil(!useFoil)}>
-          {useFoil ? 'Use Regular Art' : 'Use Foil Art'}
-        </button><br /><br />
+      <label>Upload Regular Image</label><br />
+      <input type="file" accept="image/*" onChange={handleImageSelect} /><br />
+      <label>Upload Foil Image (Optional)</label><br />
+      <input type="file" accept="image/*" onChange={handleFoilSelect} /><br />
+      <button onClick={() => setUseFoil(!useFoil)}>
+        {useFoil ? 'Use Regular Art' : 'Use Foil Art'}
+      </button><br /><br />
 
-        <button onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : `💾 ${editingCard ? 'Update' : 'Save'} Card`}
-        </button>
+      <button onClick={handleSave} disabled={saving}>
+        {saving ? 'Saving...' : `💾 ${editingCard ? 'Update' : 'Save'} Card`}
+      </button>
 
-        {saveStatus && (
-          <div style={{ marginTop: '1rem', color: saveStatus.startsWith('✅') ? 'lightgreen' : 'red' }}>
-            {saveStatus}
-          </div>
-        )}
-      </div>
-
-      <CardPreview
-        name={name || 'Card Name'}
-        type={type || 'Card Type'}
-        description={description || 'Card description goes here.'}
-        attack={attack}
-        health={health}
-        rarity={rarity}
-        imageUrl={shouldRenderImage ? (useFoil ? foilPreviewUrl : imagePreviewUrl) : ''}
-      />
+      {saveStatus && (
+        <div style={{ marginTop: '1rem', color: saveStatus.startsWith('✅') ? 'lightgreen' : 'red' }}>
+          {saveStatus}
+        </div>
+      )}
     </div>
   );
 };
