@@ -4,6 +4,8 @@ import { useAuth } from '../useAuth';
 import CardPreview from './CardPreview';
 import { uploadCardData, updateCardData } from './firebaseUtils';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { app } from '../firebase';
 
 const admins = ['lwclark92@gmail.com', '', ''];
 
@@ -69,18 +71,34 @@ const CardCreator: React.FC = () => {
     setSaving(true);
     console.log('[DEBUG] Set saving = true');
 
-    const cardData = {
-      name,
-      type,
-      description,
-      attack: parseInt(attack),
-      health: parseInt(health),
-      rarity,
-      imageFile,
-      foilFile,
-    };
-
     try {
+      const storage = getStorage(app);
+      let regularImageUrl = imageUrl;
+      let foilImageFinalUrl = foilImageUrl;
+
+      if (imageFile) {
+        const imageRef = ref(storage, `cards/${Date.now()}_${imageFile.name}`);
+        const snapshot = await uploadBytes(imageRef, imageFile);
+        regularImageUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      if (foilFile) {
+        const foilRef = ref(storage, `cards/${Date.now()}_${foilFile.name}`);
+        const foilSnap = await uploadBytes(foilRef, foilFile);
+        foilImageFinalUrl = await getDownloadURL(foilSnap.ref);
+      }
+
+      const cardData = {
+        name,
+        type,
+        description,
+        attack: parseInt(attack),
+        health: parseInt(health),
+        rarity,
+        imageUrl: regularImageUrl,
+        foilUrl: foilImageFinalUrl || '',
+      };
+
       if (!editingCard) {
         console.log('[DEBUG] Checking for duplicates...');
         const q = query(collection(db, 'cards'), where('name', '==', name));
