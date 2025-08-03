@@ -1,12 +1,10 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getFirestore, collection, addDoc, Timestamp, doc, updateDoc } from 'firebase/firestore';
-import { app } from '../firebase'; // Adjust this path if needed
+import { app } from '../firebase';
 
-const storage = getStorage(app);
 const db = getFirestore(app);
 
 /**
- * Uploads a new card with image and optional foil to Firestore and Firebase Storage.
+ * Adds a new card to Firestore using pre-uploaded image URLs.
  */
 export const uploadCardData = async ({
   name,
@@ -15,8 +13,8 @@ export const uploadCardData = async ({
   attack,
   health,
   rarity,
-  imageFile,
-  foilFile,
+  imageUrl,
+  foilUrl,
 }: {
   name: string;
   type: string;
@@ -24,21 +22,9 @@ export const uploadCardData = async ({
   attack: number;
   health: number;
   rarity: string;
-  imageFile: File;
-  foilFile?: File | null;
+  imageUrl: string;
+  foilUrl?: string;
 }) => {
-  const timestamp = Date.now();
-  const cardRef = ref(storage, `cards/${timestamp}_${imageFile.name}`);
-  const imageSnapshot = await uploadBytes(cardRef, imageFile);
-  const imageUrl = await getDownloadURL(imageSnapshot.ref);
-
-  let foilUrl = '';
-  if (foilFile) {
-    const foilRef = ref(storage, `cards/foil_${timestamp}_${foilFile.name}`);
-    const foilSnapshot = await uploadBytes(foilRef, foilFile);
-    foilUrl = await getDownloadURL(foilSnapshot.ref);
-  }
-
   await addDoc(collection(db, 'cards'), {
     name,
     type,
@@ -47,7 +33,7 @@ export const uploadCardData = async ({
     health,
     rarity,
     imageUrl,
-    foilUrl,
+    foilUrl: foilUrl || '',
     createdAt: Timestamp.now(),
   });
 };
