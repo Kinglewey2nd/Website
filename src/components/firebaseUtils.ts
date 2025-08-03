@@ -1,6 +1,6 @@
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
-import { app } from '../firebase'; // ✅ corrected path
+import { getFirestore, collection, addDoc, Timestamp, doc, updateDoc } from 'firebase/firestore';
+import { app } from '../firebase'; // Adjust this path if needed
 
 const storage = getStorage(app);
 const db = getFirestore(app);
@@ -28,13 +28,10 @@ export const uploadCardData = async ({
   foilFile?: File | null;
 }) => {
   const timestamp = Date.now();
-
-  // Upload main image
   const cardRef = ref(storage, `cards/${timestamp}_${imageFile.name}`);
   const imageSnapshot = await uploadBytes(cardRef, imageFile);
   const imageUrl = await getDownloadURL(imageSnapshot.ref);
 
-  // Upload foil image if provided
   let foilUrl = '';
   if (foilFile) {
     const foilRef = ref(storage, `cards/foil_${timestamp}_${foilFile.name}`);
@@ -42,7 +39,6 @@ export const uploadCardData = async ({
     foilUrl = await getDownloadURL(foilSnapshot.ref);
   }
 
-  // Save card data to Firestore
   await addDoc(collection(db, 'cards'), {
     name,
     type,
@@ -53,5 +49,28 @@ export const uploadCardData = async ({
     imageUrl,
     foilUrl,
     createdAt: Timestamp.now(),
+  });
+};
+
+/**
+ * Updates an existing card document by ID.
+ */
+export const updateCardData = async (
+  cardId: string,
+  updatedFields: Partial<{
+    name: string;
+    type: string;
+    description: string;
+    attack: number;
+    health: number;
+    rarity: string;
+    imageUrl: string;
+    foilUrl: string;
+  }>
+) => {
+  const cardDoc = doc(db, 'cards', cardId);
+  await updateDoc(cardDoc, {
+    ...updatedFields,
+    updatedAt: Timestamp.now(),
   });
 };
