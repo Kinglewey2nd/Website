@@ -3,7 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../useAuth';
 import CardPreview from './CardPreview';
 import { uploadCardData, updateCardData } from './firebaseUtils';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { app } from '../firebase';
 
@@ -130,6 +139,16 @@ const CardCreator: React.FC = () => {
         console.log('[DEBUG] Uploading new card...');
         await uploadCardData(cardData);
         setSaveStatus('✅ Card created!');
+
+        // Save to user's collection too
+        const userRef = doc(db, 'users', user.uid);
+        await updateDoc(userRef, {
+          collection: arrayUnion({
+            id: crypto.randomUUID(),
+            name,
+            image: regularImageUrl,
+          }),
+        });
 
         setName('');
         setType('');
