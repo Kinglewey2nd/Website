@@ -45,7 +45,7 @@ const CardCreator: React.FC = () => {
       setAttack(editingCard.attack.toString());
       setHealth(editingCard.health.toString());
       setRarity(editingCard.rarity);
-      setImagePreviewUrl(editingCard.imageUrl);
+      setImagePreviewUrl(editingCard.imageUrl || '');
       setFoilPreviewUrl(editingCard.foilUrl || '');
     }
   }, [editingCard]);
@@ -168,6 +168,10 @@ const CardCreator: React.FC = () => {
     );
   }
 
+  const shouldRenderImage = useFoil
+    ? foilPreviewUrl && foilFile
+    : imagePreviewUrl && imageFile;
+
   return (
     <div style={{ display: 'flex', gap: '3rem', padding: '2rem', color: 'white' }}>
       <div>
@@ -213,7 +217,7 @@ const CardCreator: React.FC = () => {
         attack={attack}
         health={health}
         rarity={rarity}
-        imageUrl={useFoil && foilPreviewUrl ? foilPreviewUrl : imagePreviewUrl}
+        imageUrl={shouldRenderImage ? (useFoil ? foilPreviewUrl : imagePreviewUrl) : ''}
       />
     </div>
   );
