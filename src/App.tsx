@@ -8,6 +8,7 @@ import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
 import Profile from './components/Profile';
 import CardCreator from './components/CardCreator';
+import CardGallery from './components/CardGallery'; // ✅ NEW
 import { AuthProvider, useAuth } from './useAuth';
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -36,6 +37,7 @@ const App: React.FC = () => {
       <Route path="/pack/open" element={<RequireAuth><PackOpen /></RequireAuth>} />
       <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
       <Route path="/card-creator" element={<RequireAuth><CardCreator /></RequireAuth>} />
+      <Route path="/cards" element={<RequireAuth><CardGallery /></RequireAuth>} /> {/* ✅ NEW */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
