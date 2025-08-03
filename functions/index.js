@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
+// Signed upload URL HTTP function
 exports.getSignedUploadUrl = functions.https.onRequest(async (req, res) => {
   // CORS headers
   res.set("Access-Control-Allow-Origin", "*");
@@ -23,7 +24,6 @@ exports.getSignedUploadUrl = functions.https.onRequest(async (req, res) => {
       return res.status(400).json({ error: "Missing fileName or contentType" });
     }
 
-    // Use the correct bucket name here
     const bucket = getStorage().bucket("spellgrave-f2e30");
     const file = bucket.file(`cards/${fileName}`);
 
@@ -39,5 +39,37 @@ exports.getSignedUploadUrl = functions.https.onRequest(async (req, res) => {
   } catch (error) {
     console.error("🔥 Error generating signed URL:", error);
     res.status(500).json({ error: "Failed to generate signed URL" });
+  }
+});
+
+// Callable function for deleting card images securely
+exports.deleteCardImage = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "User must be logged in."
+    );
+  }
+
+  const { fileName } = data;
+  if (!fileName) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "File name is required."
+    );
+  }
+
+  const bucket = admin.storage().bucket();
+
+  try {
+    await bucket.file(`cards/${fileName}`).delete();
+    console.log(`✅ Deleted file: cards/${fileName}`);
+    return { success: true };
+  } catch (error) {
+    console.error("🔥 Error deleting file:", error);
+    throw new functions.https.HttpsError(
+      "internal",
+      "Failed to delete file."
+    );
   }
 });
