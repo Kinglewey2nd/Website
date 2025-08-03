@@ -9,6 +9,9 @@ import { app } from '../firebase';
 
 const admins = ['lwclark92@gmail.com', '', ''];
 
+const sanitizeFileName = (name: string) => name.replace(/[^\w.-]/g, '_');
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 const CardCreator: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -50,6 +53,10 @@ const CardCreator: React.FC = () => {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        alert('Regular image is too large. Max size is 10MB.');
+        return;
+      }
       setImageFile(file);
       setImagePreviewUrl(URL.createObjectURL(file));
     }
@@ -58,6 +65,10 @@ const CardCreator: React.FC = () => {
   const handleFoilSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        alert('Foil image is too large. Max size is 10MB.');
+        return;
+      }
       setFoilFile(file);
       setFoilPreviewUrl(URL.createObjectURL(file));
     }
@@ -83,15 +94,17 @@ const CardCreator: React.FC = () => {
       let foilUrl = foilPreviewUrl;
 
       if (imageFile && imageFile.size > 0) {
-        const imageRef = ref(storage, `cards/${Date.now()}_${imageFile.name.replace(/\s+/g, '_')}`);
+        const cleanName = sanitizeFileName(imageFile.name);
+        const imageRef = ref(storage, `cards/${Date.now()}_${cleanName}`);
         const snap = await uploadBytes(imageRef, imageFile);
         imageUrl = await getDownloadURL(snap.ref);
       }
 
       if (foilFile && foilFile.size > 0) {
-        const foilRef = ref(storage, `cards/${Date.now()}_${foilFile.name.replace(/\s+/g, '_')}`);
-        const foilSnap = await uploadBytes(foilRef, foilFile);
-        foilUrl = await getDownloadURL(foilSnap.ref);
+        const cleanName = sanitizeFileName(foilFile.name);
+        const foilRef = ref(storage, `cards/${Date.now()}_${cleanName}`);
+        const snap = await uploadBytes(foilRef, foilFile);
+        foilUrl = await getDownloadURL(snap.ref);
       }
 
       const cardData = {
