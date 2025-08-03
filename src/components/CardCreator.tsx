@@ -122,7 +122,6 @@ const CardCreator: React.FC = () => {
         await uploadCardData(cardData);
         setSaveStatus('✅ Card created!');
 
-        // Reset form
         setName('');
         setType('');
         setDescription('');
