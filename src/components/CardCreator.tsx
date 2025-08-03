@@ -57,13 +57,17 @@ const CardCreator: React.FC = () => {
   };
 
   const handleSave = async () => {
+    console.log('[DEBUG] Save started');
+
     if (!name || !attack || !health || (!imageFile && !imageUrl)) {
+      console.warn('[WARN] Missing required fields');
       setSaveStatus('❌ Please complete all required fields');
       setTimeout(() => setSaveStatus(''), 3000);
       return;
     }
 
     setSaving(true);
+    console.log('[DEBUG] Set saving = true');
 
     const cardData = {
       name,
@@ -78,9 +82,11 @@ const CardCreator: React.FC = () => {
 
     try {
       if (!editingCard) {
-        // Check for duplicate card name
+        console.log('[DEBUG] Checking for duplicates...');
         const q = query(collection(db, 'cards'), where('name', '==', name));
         const snapshot = await getDocs(q);
+        console.log('[DEBUG] Duplicate query result:', snapshot.empty ? 'none found' : 'duplicate found');
+
         if (!snapshot.empty) {
           setSaveStatus('❌ A card with that name already exists');
           setSaving(false);
@@ -90,9 +96,11 @@ const CardCreator: React.FC = () => {
       }
 
       if (editingCard?.id) {
+        console.log('[DEBUG] Updating existing card...');
         await updateCardData(editingCard.id, cardData);
         setSaveStatus('✅ Card updated!');
       } else {
+        console.log('[DEBUG] Uploading new card...');
         await uploadCardData(cardData);
         setSaveStatus('✅ Card created!');
 
@@ -110,16 +118,19 @@ const CardCreator: React.FC = () => {
         setUseFoil(false);
       }
 
+      console.log('[DEBUG] Save complete');
+
       setTimeout(() => {
         setSaveStatus('');
         navigate('/cards');
       }, 1500);
     } catch (error) {
-      console.error('Error saving card:', error);
+      console.error('[ERROR] Save failed:', error);
       setSaveStatus('❌ Failed to save card');
       setTimeout(() => setSaveStatus(''), 3000);
     } finally {
       setSaving(false);
+      console.log('[DEBUG] Save flow ended');
     }
   };
 
