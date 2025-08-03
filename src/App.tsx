@@ -8,6 +8,8 @@ import Collection from './components/Collection';
 import PackOpen from './components/PackOpen';
 import Profile from './components/Profile';
 import { AuthProvider, useAuth } from './useAuth';
+import CardCreator from './components/CardCreator';
+<Route path="/card-creator" element={<CardCreator />} />
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
