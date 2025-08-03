@@ -44,16 +44,26 @@ const CardCreator: React.FC = () => {
       const snap = await uploadBytes(storageRef, file);
       const url = await getDownloadURL(snap.ref);
       console.log('✅ File uploaded. URL:', url);
-      setStatus(`✅ Upload successful! URL: ${url}`);
+      setStatus(`✅ Upload successful! URL copied to console.`);
     } catch (err) {
       console.error('❌ Upload error:', err);
       setStatus('❌ Upload failed. See console for details.');
     }
   };
 
+  if (!user) {
+    return (
+      <div style={{ padding: '2rem', color: 'white' }}>
+        <h2>⚠️ You must be logged in</h2>
+        <p>Please <a href="/login" style={{ color: '#00f' }}>login</a> to upload a card.</p>
+        <button onClick={() => navigate('/menu')} style={{ marginTop: '1rem' }}>Back to Menu</button>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: '2rem', color: 'white' }}>
-      <h2>🧪 Image Upload Debug</h2>
+      <h2>🧙 Card Creator</h2>
       <input type="file" accept="image/*" onChange={handleSelect} /><br /><br />
       {preview && (
         <img src={preview} alt="preview" style={{ width: 200, border: '1px solid white' }} />
