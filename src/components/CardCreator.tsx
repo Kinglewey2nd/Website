@@ -3,15 +3,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../useAuth';
 import CardPreview from './CardPreview';
 import { uploadCardData, updateCardData } from './firebaseUtils';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
-const admins = ['lwclark92@gmail.com', 'admin@spellgrave.com', 'lewis@spellgrave.com'];
+const admins = ['lwclark92@gmail.com', '', ''];
+
 const CardCreator: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const editingCard = location.state?.card || null;
-
   const isAdmin = user && admins.includes(user.email || '');
+  const db = getFirestore();
 
   const [name, setName] = useState('');
   const [type, setType] = useState('');
@@ -24,6 +26,8 @@ const CardCreator: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [foilImageUrl, setFoilImageUrl] = useState('');
   const [useFoil, setUseFoil] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (editingCard) {
@@ -53,30 +57,70 @@ const CardCreator: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!name || !attack || !health || !imageUrl) return alert('Fill out required fields');
+    if (!name || !attack || !health || (!imageFile && !imageUrl)) {
+      setSaveStatus('❌ Please complete all required fields');
+      setTimeout(() => setSaveStatus(''), 3000);
+      return;
+    }
 
-    const data = {
+    setSaving(true);
+
+    const cardData = {
       name,
       type,
       description,
-      attack: +attack,
-      health: +health,
+      attack: parseInt(attack),
+      health: parseInt(health),
       rarity,
       imageFile,
       foilFile,
-      imageUrl,
-      foilUrl: foilImageUrl,
     };
 
-    if (editingCard) {
-      await updateCardData(editingCard.id, data);
-      alert('Card updated!');
-    } else {
-      await uploadCardData(data);
-      alert('Card created!');
-    }
+    try {
+      if (!editingCard) {
+        // Check for duplicate card name
+        const q = query(collection(db, 'cards'), where('name', '==', name));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          setSaveStatus('❌ A card with that name already exists');
+          setSaving(false);
+          setTimeout(() => setSaveStatus(''), 3000);
+          return;
+        }
+      }
 
-    navigate('/cards');
+      if (editingCard?.id) {
+        await updateCardData(editingCard.id, cardData);
+        setSaveStatus('✅ Card updated!');
+      } else {
+        await uploadCardData(cardData);
+        setSaveStatus('✅ Card created!');
+
+        // Reset form
+        setName('');
+        setType('');
+        setDescription('');
+        setAttack('');
+        setHealth('');
+        setRarity('Common');
+        setImageFile(null);
+        setFoilFile(null);
+        setImageUrl('');
+        setFoilImageUrl('');
+        setUseFoil(false);
+      }
+
+      setTimeout(() => {
+        setSaveStatus('');
+        navigate('/cards');
+      }, 1500);
+    } catch (error) {
+      console.error('Error saving card:', error);
+      setSaveStatus('❌ Failed to save card');
+      setTimeout(() => setSaveStatus(''), 3000);
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (!isAdmin) {
@@ -113,7 +157,15 @@ const CardCreator: React.FC = () => {
         <button onClick={() => setUseFoil(!useFoil)}>
           {useFoil ? 'Switch to Regular' : 'Switch to Foil'}
         </button><br /><br />
-        <button onClick={handleSave}>💾 {editingCard ? 'Update' : 'Save'} Card</button>
+        <button onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving...' : `💾 ${editingCard ? 'Update' : 'Save'} Card`}
+        </button>
+
+        {saveStatus && (
+          <div style={{ marginTop: '1rem', color: saveStatus.startsWith('✅') ? 'lightgreen' : 'red' }}>
+            {saveStatus}
+          </div>
+        )}
       </div>
 
       <CardPreview
