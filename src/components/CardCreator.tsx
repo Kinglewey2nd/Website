@@ -4,6 +4,8 @@ import { useAuth } from '../useAuth';
 import CardPreview from './CardPreview';
 import { uploadCardData, updateCardData } from './firebaseUtils';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { app } from '../firebase';
 
 const admins = ['lwclark92@gmail.com', '', ''];
 
@@ -21,6 +23,14 @@ const CardCreator: React.FC = () => {
   const [attack, setAttack] = useState('');
   const [health, setHealth] = useState('');
   const [rarity, setRarity] = useState<'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic' | 'Celestial'>('Common');
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [foilFile, setFoilFile] = useState<File | null>(null);
+  const [useFoil, setUseFoil] = useState(false);
+
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+  const [foilPreviewUrl, setFoilPreviewUrl] = useState('');
+
   const [saveStatus, setSaveStatus] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -32,30 +42,58 @@ const CardCreator: React.FC = () => {
       setAttack(editingCard.attack.toString());
       setHealth(editingCard.health.toString());
       setRarity(editingCard.rarity);
+      setImagePreviewUrl(editingCard.imageUrl);
+      setFoilPreviewUrl(editingCard.foilUrl || '');
     }
   }, [editingCard]);
 
-  const handleSave = async () => {
-    console.log('[DEBUG] Save started');
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
+  const handleFoilSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFoilFile(file);
+      setFoilPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSave = async () => {
     if (!user) {
-      console.error('[ERROR] No authenticated user — upload blocked');
       setSaveStatus('❌ You must be logged in to upload');
-      setTimeout(() => setSaveStatus(''), 3000);
       return;
     }
 
     if (!name || !attack || !health) {
-      console.warn('[WARN] Missing required fields');
-      setSaveStatus('❌ Please complete all required fields');
-      setTimeout(() => setSaveStatus(''), 3000);
+      setSaveStatus('❌ Please fill in required fields');
       return;
     }
 
     setSaving(true);
-    console.log('[DEBUG] Set saving = true');
+    setSaveStatus('');
 
     try {
+      const storage = getStorage(app);
+      let imageUrl = imagePreviewUrl;
+      let foilUrl = foilPreviewUrl;
+
+      if (imageFile && imageFile.size > 0) {
+        const imageRef = ref(storage, `cards/${Date.now()}_${imageFile.name.replace(/\s+/g, '_')}`);
+        const snap = await uploadBytes(imageRef, imageFile);
+        imageUrl = await getDownloadURL(snap.ref);
+      }
+
+      if (foilFile && foilFile.size > 0) {
+        const foilRef = ref(storage, `cards/${Date.now()}_${foilFile.name.replace(/\s+/g, '_')}`);
+        const foilSnap = await uploadBytes(foilRef, foilFile);
+        foilUrl = await getDownloadURL(foilSnap.ref);
+      }
+
       const cardData = {
         name,
         type,
@@ -63,62 +101,56 @@ const CardCreator: React.FC = () => {
         attack: parseInt(attack),
         health: parseInt(health),
         rarity,
-        imageUrl: '',
-        foilUrl: '',
+        imageUrl,
+        foilUrl,
       };
 
       if (!editingCard) {
-        console.log('[DEBUG] Checking for duplicates...');
         const q = query(collection(db, 'cards'), where('name', '==', name));
         const snapshot = await getDocs(q);
-        console.log('[DEBUG] Duplicate query result:', snapshot.empty ? 'none found' : 'duplicate found');
-
         if (!snapshot.empty) {
           setSaveStatus('❌ A card with that name already exists');
           setSaving(false);
-          setTimeout(() => setSaveStatus(''), 3000);
           return;
         }
       }
 
       if (editingCard?.id) {
-        console.log('[DEBUG] Updating existing card...');
         await updateCardData(editingCard.id, cardData);
         setSaveStatus('✅ Card updated!');
       } else {
-        console.log('[DEBUG] Uploading new card...');
         await uploadCardData(cardData);
         setSaveStatus('✅ Card created!');
-
         setName('');
         setType('');
         setDescription('');
         setAttack('');
         setHealth('');
         setRarity('Common');
+        setImageFile(null);
+        setFoilFile(null);
+        setImagePreviewUrl('');
+        setFoilPreviewUrl('');
+        setUseFoil(false);
       }
-
-      console.log('[DEBUG] Save complete');
 
       setTimeout(() => {
         setSaveStatus('');
         navigate('/cards');
       }, 1500);
-    } catch (error) {
-      console.error('[ERROR] Save failed:', error);
-      setSaveStatus('❌ Failed to save card');
-      setTimeout(() => setSaveStatus(''), 3000);
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setSaveStatus('❌ Upload failed — check your image files and try again.');
     } finally {
       setSaving(false);
-      console.log('[DEBUG] Save flow ended');
     }
   };
 
   if (!isAdmin) {
     return (
-      <div style={{ textAlign: 'center', color: 'white', marginTop: '5rem' }}>
+      <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
         <h2>🚫 Access Denied</h2>
-        <p>This page is for admin use only.</p>
+        <p>This page is for admin users only.</p>
       </div>
     );
   }
@@ -142,6 +174,14 @@ const CardCreator: React.FC = () => {
           <option value="Celestial">🌈 Celestial</option>
         </select><br /><br />
 
+        <label>Upload Regular Image</label><br />
+        <input type="file" accept="image/*" onChange={handleImageSelect} /><br />
+        <label>Upload Foil Image (Optional)</label><br />
+        <input type="file" accept="image/*" onChange={handleFoilSelect} /><br />
+        <button onClick={() => setUseFoil(!useFoil)}>
+          {useFoil ? 'Use Regular Art' : 'Use Foil Art'}
+        </button><br /><br />
+
         <button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : `💾 ${editingCard ? 'Update' : 'Save'} Card`}
         </button>
@@ -160,7 +200,7 @@ const CardCreator: React.FC = () => {
         attack={attack}
         health={health}
         rarity={rarity}
-        imageUrl={''} // No preview image
+        imageUrl={useFoil && foilPreviewUrl ? foilPreviewUrl : imagePreviewUrl}
       />
     </div>
   );
