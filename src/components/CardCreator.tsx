@@ -42,10 +42,10 @@ const CardCreator: React.FC = () => {
     try {
       setStatus("⏳ Requesting signed upload URL...");
 
-      // Make filename safe once
+      // Generate a safe, unique filename
       const safeFileName = `${Date.now()}_${file.name.replace(/[^\w.-]/g, "_")}`;
 
-      // Request signed upload URL from your Cloud Function
+      // Call your Cloud Function to get a signed URL for uploading
       const res = await fetch(
         "https://us-central1-spellgrave-f2e30.cloudfunctions.net/getSignedUploadUrl",
         {
@@ -66,7 +66,7 @@ const CardCreator: React.FC = () => {
       console.log("✅ Got signed URL:", data.url);
       setStatus("⬆️ Uploading to signed URL...");
 
-      // Upload file using PUT to the signed URL
+      // Upload the actual file to Firebase Storage using the signed URL (PUT request)
       const uploadRes = await fetch(data.url, {
         method: "PUT",
         headers: {
@@ -80,10 +80,10 @@ const CardCreator: React.FC = () => {
         throw new Error(`Upload failed. Status: ${uploadRes.status} – ${errorText}`);
       }
 
-      // Extract the public URL (strip query params)
+      // Remove query params to get the public URL for displaying the image
       const cleanUrl = data.url.split("?")[0];
 
-      // Save metadata and clean URL in Firestore
+      // Save card metadata including the Storage fileName and public imageUrl to Firestore
       await addDoc(collection(db, "cards"), {
         fileName: safeFileName,
         imageUrl: cleanUrl,
@@ -106,6 +106,7 @@ const CardCreator: React.FC = () => {
   return (
     <div style={{ padding: "2rem", color: "white" }}>
       <h2>🧪 Card Image Upload</h2>
+
       <input
         type="text"
         placeholder="Enter card name"
@@ -113,9 +114,12 @@ const CardCreator: React.FC = () => {
         onChange={(e) => setCardName(e.target.value)}
         style={{ marginBottom: "1rem", padding: "0.5rem", width: "100%" }}
       />
+
       <input type="file" accept="image/*" onChange={handleSelect} />
+
       <br />
       <br />
+
       {preview && (
         <img
           src={preview}
@@ -123,12 +127,16 @@ const CardCreator: React.FC = () => {
           style={{ width: 200, border: "1px solid white" }}
         />
       )}
+
       <br />
       <br />
+
       <button onClick={handleUpload} disabled={!file || !cardName.trim()}>
         Upload Image
       </button>
+
       <p>{status}</p>
+
       <button onClick={() => navigate("/menu")} style={{ marginTop: "1rem" }}>
         Back to Menu
       </button>
