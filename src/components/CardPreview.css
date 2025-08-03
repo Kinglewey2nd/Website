@@ -1,82 +1,79 @@
-.card-preview {
-  width: 240px;
-  height: 360px;
-  background: #1e1e1e;
-  color: white;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-  font-family: 'Cinzel', serif;
-  display: flex;
-  flex-direction: column;
+import React from 'react';
+import './CardPreview.css'; // optional, for styling if used
+
+interface CardPreviewProps {
+  name: string;
+  type: string;
+  description: string;
+  attack: string | number;
+  health: string | number;
+  rarity: string;
+  imageUrl: string;
 }
 
-.gray-border     { border: 4px solid #ccc; }
-.green-border    { border: 4px solid #4CAF50; }
-.blue-border     { border: 4px solid #2196F3; }
-.purple-border   { border: 4px solid #9C27B0; }
-.gold-border     { border: 4px solid gold; }
-.red-border      { border: 4px solid crimson; }
-.rainbow-border  {
-  border: 4px solid transparent;
-  background-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
-  background-clip: border-box;
-}
+const CardPreview: React.FC<CardPreviewProps> = ({
+  name,
+  type,
+  description,
+  attack,
+  health,
+  rarity,
+  imageUrl
+}) => {
+  return (
+    <div style={{
+      width: '300px',
+      height: '450px',
+      border: '2px solid #888',
+      borderRadius: '12px',
+      backgroundColor: '#222',
+      padding: '1rem',
+      color: 'white',
+      fontFamily: 'Cinzel, serif',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between'
+    }}>
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt="Card art"
+          style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }}
+        />
+      ) : (
+        <div style={{
+          width: '100%',
+          height: '200px',
+          backgroundColor: '#444',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '8px',
+          fontSize: '0.9rem',
+          color: '#aaa'
+        }}>
+          No image preview
+        </div>
+      )}
 
-.image-section {
-  position: relative;
-  height: 55%;
-  overflow: hidden;
-}
+      <h3 style={{ marginTop: '1rem', fontSize: '1.4rem' }}>{name}</h3>
+      <p style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>{type}</p>
+      <p style={{ fontSize: '0.95rem', flexGrow: 1 }}>{description}</p>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: '1rem',
+        fontWeight: 'bold',
+        fontSize: '1.1rem'
+      }}>
+        <span>⚔️ {attack}</span>
+        <span>❤️ {health}</span>
+      </div>
+      <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '1rem', color: '#ccc' }}>
+        {rarity}
+      </div>
+    </div>
+  );
+};
 
-.image-section img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.rarity-icon {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 1.5rem;
-}
-
-.card-body {
-  padding: 0.75rem;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-}
-
-.card-type {
-  font-size: 0.85rem;
-  color: #aaa;
-  margin-bottom: 0.5rem;
-}
-
-.card-desc {
-  font-size: 0.9rem;
-  flex-grow: 1;
-}
-
-.card-stats {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.2rem;
-  margin-top: 0.5rem;
-}
-
-.attack, .health {
-  background: #333;
-  padding: 4px 10px;
-  border-radius: 8px;
-}
+export default CardPreview;
