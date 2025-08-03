@@ -25,6 +25,8 @@ const MainMenu: React.FC = () => {
         <button onClick={() => navigate('/pack/open')}>🎴 Open a Pack</button>
         <button onClick={() => navigate('/collection')}>🗂️ View Collection</button>
         <button onClick={() => navigate('/profile')}>🧙 View Profile</button>
+        <button onClick={() => navigate('/card-creator')}>🛠️ Card Creator</button>
+        <button onClick={() => navigate('/cards')}>🃏 View All Cards</button>
         <button onClick={handleLogout}>🚪 Logout</button>
       </div>
     </div>
