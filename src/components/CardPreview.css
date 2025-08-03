@@ -1,5 +1,5 @@
 import React from 'react';
-import './CardPreview.css'; // optional, for styling if used
+import './CardPreview.css';
 
 interface CardPreviewProps {
   name: string;
@@ -20,6 +20,8 @@ const CardPreview: React.FC<CardPreviewProps> = ({
   rarity,
   imageUrl
 }) => {
+  const isLocalImage = imageUrl.startsWith('blob:') || imageUrl.startsWith('data:');
+
   return (
     <div style={{
       width: '300px',
@@ -34,7 +36,7 @@ const CardPreview: React.FC<CardPreviewProps> = ({
       flexDirection: 'column',
       justifyContent: 'space-between'
     }}>
-      {imageUrl ? (
+      {isLocalImage ? (
         <img
           src={imageUrl}
           alt="Card art"
@@ -61,19 +63,3 @@ const CardPreview: React.FC<CardPreviewProps> = ({
       <p style={{ fontSize: '0.95rem', flexGrow: 1 }}>{description}</p>
       <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '1rem',
-        fontWeight: 'bold',
-        fontSize: '1.1rem'
-      }}>
-        <span>⚔️ {attack}</span>
-        <span>❤️ {health}</span>
-      </div>
-      <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '1rem', color: '#ccc' }}>
-        {rarity}
-      </div>
-    </div>
-  );
-};
-
-export default CardPreview;
