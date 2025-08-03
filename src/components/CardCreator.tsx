@@ -61,6 +61,13 @@ const CardCreator: React.FC = () => {
   const handleSave = async () => {
     console.log('[DEBUG] Save started');
 
+    if (!user) {
+      console.error('[ERROR] No authenticated user — upload blocked');
+      setSaveStatus('❌ You must be logged in to upload');
+      setTimeout(() => setSaveStatus(''), 3000);
+      return;
+    }
+
     if (!name || !attack || !health || (!imageFile && !imageUrl)) {
       console.warn('[WARN] Missing required fields');
       setSaveStatus('❌ Please complete all required fields');
