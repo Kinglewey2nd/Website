@@ -6,7 +6,7 @@ import { getFirestore, collection, query, where, getDocs } from 'firebase/firest
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { app } from '../firebase';
 
-const admins = ['lwclark92@gmail.com', '', ''];
+const admins = ['lwclark92@gmail.com'];
 
 const sanitizeFileName = (name: string) => name.replace(/[^\w.-]/g, '_');
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -17,7 +17,7 @@ const CardCreator: React.FC = () => {
   const location = useLocation();
   const editingCard = location.state?.card || null;
   const isAdmin = user && admins.includes(user.email || '');
-  const db = getFirestore();
+  const db = getFirestore(app);
 
   const [name, setName] = useState('');
   const [type, setType] = useState('');
@@ -25,7 +25,6 @@ const CardCreator: React.FC = () => {
   const [attack, setAttack] = useState('');
   const [health, setHealth] = useState('');
   const [rarity, setRarity] = useState<'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic' | 'Celestial'>('Common');
-
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [saveStatus, setSaveStatus] = useState('');
@@ -74,10 +73,15 @@ const CardCreator: React.FC = () => {
       let imageUrl = imagePreviewUrl;
 
       if (imageFile && imageFile.size > 0) {
+        console.log("✅ Uploading via Firebase SDK:", imageFile.name);
+        console.log("imageFile instanceof File:", imageFile instanceof File);
+
         const cleanName = sanitizeFileName(imageFile.name);
         const imageRef = ref(storage, `cards/${Date.now()}_${cleanName}`);
         const snap = await uploadBytes(imageRef, imageFile);
         imageUrl = await getDownloadURL(snap.ref);
+
+        console.log("✅ Upload complete, imageUrl:", imageUrl);
       }
 
       const cardData = {
