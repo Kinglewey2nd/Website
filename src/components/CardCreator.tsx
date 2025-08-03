@@ -1,7 +1,4 @@
-// src/components/CardCreator.tsx
 import React, { useState } from 'react';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { app } from '../firebase';
 import { useAuth } from '../useAuth';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +8,7 @@ const CardCreator: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState('');
   const [preview, setPreview] = useState('');
+  const [downloadUrl, setDownloadUrl] = useState('');
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] || null;
@@ -25,7 +23,7 @@ const CardCreator: React.FC = () => {
 
   const handleUpload = async () => {
     if (!user) {
-      setStatus('❌ Must be logged in to upload.');
+      setStatus('❌ You must be logged in to upload.');
       return;
     }
 
@@ -35,16 +33,27 @@ const CardCreator: React.FC = () => {
     }
 
     setStatus('⏳ Uploading...');
-    const storage = getStorage(app);
-    const cleanName = file.name.replace(/[^\w.-]/g, '_');
-    const storageRef = ref(storage, `cards/${Date.now()}_${cleanName}`);
+    const fileName = encodeURIComponent(`cards/${Date.now()}_${file.name}`);
+    const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/spellgrave-f2e30.appspot.com/o?name=${fileName}`;
 
     try {
-      console.log('📤 Uploading file via Firebase SDK:', file.name);
-      const snap = await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(snap.ref);
-      console.log('✅ File uploaded. URL:', url);
-      setStatus(`✅ Upload successful! URL copied to console.`);
+      const res = await fetch(uploadUrl, {
+        method: 'POST',
+        body: file,
+        headers: {
+          'Content-Type': file.type
+        }
+      });
+
+      if (!res.ok) throw new Error(`Upload failed. HTTP ${res.status}`);
+      const result = await res.json();
+
+      const token = result.downloadTokens;
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/spellgrave-f2e30.appspot.com/o/${fileName}?alt=media&token=${token}`;
+
+      console.log('✅ File uploaded:', publicUrl);
+      setDownloadUrl(publicUrl);
+      setStatus('✅ Upload successful!');
     } catch (err) {
       console.error('❌ Upload error:', err);
       setStatus('❌ Upload failed. See console for details.');
@@ -63,7 +72,7 @@ const CardCreator: React.FC = () => {
 
   return (
     <div style={{ padding: '2rem', color: 'white' }}>
-      <h2>🧙 Card Creator</h2>
+      <h2>🧪 Card Creator (CORS-Safe Upload)</h2>
       <input type="file" accept="image/*" onChange={handleSelect} /><br /><br />
       {preview && (
         <img src={preview} alt="preview" style={{ width: 200, border: '1px solid white' }} />
@@ -71,6 +80,14 @@ const CardCreator: React.FC = () => {
       <br /><br />
       <button onClick={handleUpload} disabled={!file}>Upload Image</button>
       <p>{status}</p>
+      {downloadUrl && (
+        <div>
+          <p>✅ Uploaded Image URL:</p>
+          <a href={downloadUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0af' }}>
+            {downloadUrl}
+          </a>
+        </div>
+      )}
       <button onClick={() => navigate('/menu')} style={{ marginTop: '1rem' }}>Back to Menu</button>
     </div>
   );

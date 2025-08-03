@@ -1,9 +1,9 @@
 [
   {
     "origin": [
-      "http://localhost:5173",
       "https://dev-spellgrave.vercel.app",
-      "https://spellgrave.vercel.app"
+      "https://spellgrave.vercel.app",
+      "http://localhost:5173"
     ],
     "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     "responseHeader": [
