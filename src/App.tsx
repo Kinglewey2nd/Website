@@ -3,6 +3,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import CardCreator from './components/CardCreator';
+import MainMenu from './components/MainMenu';
 import { useAuth } from './useAuth';
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -15,13 +16,22 @@ const App: React.FC = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route
-        path="/"
+        path="/menu"
+        element={
+          <RequireAuth>
+            <MainMenu />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/card-creator"
         element={
           <RequireAuth>
             <CardCreator />
           </RequireAuth>
         }
       />
+      <Route path="*" element={<Navigate to="/menu" />} />
     </Routes>
   );
 };
