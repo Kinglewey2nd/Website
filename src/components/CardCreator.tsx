@@ -77,12 +77,14 @@ const CardCreator: React.FC = () => {
       let foilImageFinalUrl = foilImageUrl;
 
       if (imageFile) {
+        console.log('[LIVE DEBUG] Uploading regular art using uploadBytes():', imageFile.name);
         const imageRef = ref(storage, `cards/${Date.now()}_${imageFile.name}`);
         const snapshot = await uploadBytes(imageRef, imageFile);
         regularImageUrl = await getDownloadURL(snapshot.ref);
       }
 
       if (foilFile) {
+        console.log('[LIVE DEBUG] Uploading foil art using uploadBytes():', foilFile.name);
         const foilRef = ref(storage, `cards/${Date.now()}_${foilFile.name}`);
         const foilSnap = await uploadBytes(foilRef, foilFile);
         foilImageFinalUrl = await getDownloadURL(foilSnap.ref);
