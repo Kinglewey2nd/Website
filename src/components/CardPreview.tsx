@@ -1,63 +1,57 @@
-import React from 'react';
-import './CardPreview.css';
+// src/pages/PreviewPage.tsx
+import React, { useEffect, useState } from 'react';
+import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
+import { app } from '../firebase';
+import CardPreview from '../components/CardPreview';
 
-type Rarity =
-  | 'Common'
-  | 'Uncommon'
-  | 'Rare'
-  | 'Epic'
-  | 'Legendary'
-  | 'Mythic'
-  | 'Celestial';
+const storage = getStorage(app);
 
-interface CardPreviewProps {
-  name: string;
-  type: string;
-  description: string;
-  attack: number;
-  health: number;
-  rarity: Rarity;
-  imageUrl: string;
-}
+const PreviewPage: React.FC = () => {
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const rarityStyles: Record<Rarity, { icon: string; border: string }> = {
-  Common:     { icon: '🔹', border: 'gray-border' },
-  Uncommon:   { icon: '🔸', border: 'green-border' },
-  Rare:       { icon: '🔷', border: 'blue-border' },
-  Epic:       { icon: '🟣', border: 'purple-border' },
-  Legendary:  { icon: '🟡', border: 'gold-border' },
-  Mythic:     { icon: '🔥', border: 'red-border' },
-  Celestial:  { icon: '🌈', border: 'rainbow-border' },
-};
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const cardsFolderRef = ref(storage, 'cards'); // this matches the folder used in your upload
+        const result = await listAll(cardsFolderRef);
+        const urls = await Promise.all(result.items.map(item => getDownloadURL(item)));
+        setImageUrls(urls);
+      } catch (error) {
+        console.error('❌ Failed to list card images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const CardPreview: React.FC<CardPreviewProps> = ({
-  name,
-  type,
-  description,
-  attack,
-  health,
-  rarity,
-  imageUrl,
-}) => {
-  const { icon, border } = rarityStyles[rarity];
+    fetchImages();
+  }, []);
 
   return (
-    <div className={`card-preview ${border}`}>
-      <div className="image-section">
-        <img src={imageUrl} alt={name} />
-        <div className="rarity-icon">{icon}</div>
-      </div>
-      <div className="card-body">
-        <h3 className="card-name">{name}</h3>
-        <p className="card-type">{type}</p>
-        <p className="card-desc">{description}</p>
-        <div className="card-stats">
-          <span className="attack">{attack}</span>
-          <span className="health">{health}</span>
-        </div>
+    <div style={{ padding: '3rem', color: 'white' }}>
+      <h1 style={{ textAlign: 'center' }}>🖼️ All Uploaded Cards</h1>
+      {loading && <p>Loading cards from Firebase Storage...</p>}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: '1.5rem',
+      }}>
+        {imageUrls.map((url, i) => (
+          <CardPreview
+            key={i}
+            name={`Card ${i + 1}`}
+            type="Creature"
+            description="A mysterious uploaded card."
+            attack={0}
+            health={0}
+            rarity="Common" // placeholder for now — upgrade later with Firestore metadata
+            imageUrl={url}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
-export default CardPreview;
+export default PreviewPage;

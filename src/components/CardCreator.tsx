@@ -1,3 +1,4 @@
+// src/components/CardCreator.tsx
 import React, { useState } from 'react';
 import { useAuth } from '../useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +9,6 @@ const CardCreator: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState('');
   const [preview, setPreview] = useState('');
-  const [downloadUrl, setDownloadUrl] = useState('');
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] || null;
@@ -23,7 +23,7 @@ const CardCreator: React.FC = () => {
 
   const handleUpload = async () => {
     if (!user) {
-      setStatus('❌ You must be logged in to upload.');
+      setStatus('❌ Must be logged in to upload.');
       return;
     }
 
@@ -32,47 +32,53 @@ const CardCreator: React.FC = () => {
       return;
     }
 
-    setStatus('⏳ Uploading...');
-    const fileName = encodeURIComponent(`cards/${Date.now()}_${file.name}`);
-    const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/spellgrave-f2e30.appspot.com/o?name=${fileName}`;
-
     try {
-      const res = await fetch(uploadUrl, {
-        method: 'POST',
-        body: file,
-        headers: {
-          'Content-Type': file.type
+      setStatus('⏳ Requesting signed upload URL...');
+      const res = await fetch(
+        'https://us-central1-spellgrave-f2e30.cloudfunctions.net/getSignedUploadUrl',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fileName: `${Date.now()}_${file.name.replace(/[^\w.-]/g, '_')}`,
+            contentType: file.type,
+          }),
         }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+
+      console.log('✅ Got signed URL:', data.url);
+      setStatus('⬆️ Uploading to signed URL...');
+
+      const uploadRes = await fetch(data.url, {
+        method: 'PUT',
+        mode: 'cors', // ✅ Explicitly use CORS
+        headers: {
+          'Content-Type': file.type, // ✅ Must match what was passed in POST
+        },
+        body: file,
       });
 
-      if (!res.ok) throw new Error(`Upload failed. HTTP ${res.status}`);
-      const result = await res.json();
+      if (!uploadRes.ok) {
+        const errorText = await uploadRes.text(); // ✅ Helpful debug info
+        throw new Error(`Upload failed. Status: ${uploadRes.status} – ${errorText}`);
+      }
 
-      const token = result.downloadTokens;
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/spellgrave-f2e30.appspot.com/o/${fileName}?alt=media&token=${token}`;
-
-      console.log('✅ File uploaded:', publicUrl);
-      setDownloadUrl(publicUrl);
-      setStatus('✅ Upload successful!');
-    } catch (err) {
+      setStatus('✅ Upload successful! Image is now in Firebase Storage.');
+      console.log('✅ Upload complete:', data.url);
+    } catch (err: any) {
       console.error('❌ Upload error:', err);
-      setStatus('❌ Upload failed. See console for details.');
+      setStatus(`❌ Upload failed: ${err.message || err}`);
     }
   };
 
-  if (!user) {
-    return (
-      <div style={{ padding: '2rem', color: 'white' }}>
-        <h2>⚠️ You must be logged in</h2>
-        <p>Please <a href="/login" style={{ color: '#00f' }}>login</a> to upload a card.</p>
-        <button onClick={() => navigate('/menu')} style={{ marginTop: '1rem' }}>Back to Menu</button>
-      </div>
-    );
-  }
-
   return (
     <div style={{ padding: '2rem', color: 'white' }}>
-      <h2>🧪 Card Creator (CORS-Safe Upload)</h2>
+      <h2>🧪 Card Image Upload</h2>
       <input type="file" accept="image/*" onChange={handleSelect} /><br /><br />
       {preview && (
         <img src={preview} alt="preview" style={{ width: 200, border: '1px solid white' }} />
@@ -80,14 +86,6 @@ const CardCreator: React.FC = () => {
       <br /><br />
       <button onClick={handleUpload} disabled={!file}>Upload Image</button>
       <p>{status}</p>
-      {downloadUrl && (
-        <div>
-          <p>✅ Uploaded Image URL:</p>
-          <a href={downloadUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0af' }}>
-            {downloadUrl}
-          </a>
-        </div>
-      )}
       <button onClick={() => navigate('/menu')} style={{ marginTop: '1rem' }}>Back to Menu</button>
     </div>
   );
