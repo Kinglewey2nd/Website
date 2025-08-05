@@ -16,34 +16,59 @@ const MainMenu: React.FC = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      height: '100vh',
-      backgroundColor: 'rgba(0, 0, 0, 0.85)',
-      color: 'white',
-      fontFamily: 'Cinzel, serif',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100vh',
+        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+        color: 'white',
+        fontFamily: 'Cinzel, serif',
+      }}
+    >
       {/* Main Area */}
       <div style={{ flex: 1, textAlign: 'center', paddingTop: '8rem' }}>
         <h1 style={{ fontSize: '3rem' }}>🧙‍♂️ SpellGrave</h1>
-        <button onClick={() => navigate('/pack/open')} style={buttonStyle}>🎴 Open a Pack</button><br />
-        <button onClick={() => navigate('/collection')} style={buttonStyle}>📚 View Collection</button><br />
-        <button onClick={() => navigate('/profile')} style={buttonStyle}>👤 Profile</button><br />
-        <button onClick={handleLogout} style={{ ...buttonStyle, marginTop: '2rem', backgroundColor: '#511' }}>🚪 Logout</button>
+        <button onClick={() => navigate('/pack/open')} style={buttonStyle}>
+          🎴 Open a Pack
+        </button>
+        <br />
+        <button onClick={() => navigate('/collection')} style={buttonStyle}>
+          📚 View Collection
+        </button>
+        <br />
+        <button onClick={() => navigate('/profile')} style={buttonStyle}>
+          👤 Profile
+        </button>
+        <br />
+        <button
+          onClick={handleLogout}
+          style={{ ...buttonStyle, marginTop: '2rem', backgroundColor: '#511' }}
+        >
+          🚪 Logout
+        </button>
       </div>
 
       {/* Admin Bar */}
       {isAdmin && (
-        <div style={{
-          width: '280px',
-          backgroundColor: '#222',
-          padding: '2rem',
-          borderLeft: '2px solid #555',
-        }}>
-          <h2 style={{ borderBottom: '1px solid #444', paddingBottom: '0.5rem' }}>🛠️ Admin</h2>
-          <button onClick={() => navigate('/card-creator')} style={adminButtonStyle}>➕ Card Creator</button><br />
-          <button onClick={() => navigate('/cards')} style={adminButtonStyle}>📝 Card Editor</button>
+        <div
+          style={{
+            width: '280px',
+            backgroundColor: '#222',
+            padding: '2rem',
+            borderLeft: '2px solid #555',
+          }}
+        >
+          <h2 style={{ borderBottom: '1px solid #444', paddingBottom: '0.5rem' }}>
+            🛠️ Admin
+          </h2>
+          <button onClick={() => navigate('/card-creator')} style={adminButtonStyle}>
+            ➕ Card Creator
+          </button>
+          <br />
+          <button onClick={() => navigate('/card-editor')} style={adminButtonStyle}>
+            📝 Card Editor
+          </button>
         </div>
       )}
     </div>
