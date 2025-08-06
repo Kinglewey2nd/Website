@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuth } from '../useAuth';
 
-const admins = ['lwclark92@gmail.com', '', ''];
+const admins = ['lwclark92@gmail.com', 'neetinegi.codedrill@gmail.com', ''];
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isAdmin = user && admins.includes(user.email || '');
+  const isAdmin = user && admins.includes('neetinegi.codedrill@gmail.com');
+  console.log(admins.includes('neetinegi.codedrill@gmail.com'), "email");
+  console.log(user, 'mainmenu');
+  console.log(isAdmin, "isAdmin");
 
   const handleLogout = async () => {
     await signOut(getAuth());
@@ -62,6 +65,9 @@ const MainMenu: React.FC = () => {
           <h2 style={{ borderBottom: '1px solid #444', paddingBottom: '0.5rem' }}>
             🛠️ Admin
           </h2>
+           <button onClick={() => navigate('/view-cards')} style={adminButtonStyle}>
+            View Card
+          </button>
           <button onClick={() => navigate('/card-creator')} style={adminButtonStyle}>
             ➕ Card Creator
           </button>

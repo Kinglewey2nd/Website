@@ -46,6 +46,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
+  console.log(user, "useAuth");
+
   return (
     <AuthContext.Provider value={{ user, loading }}>
       {children}

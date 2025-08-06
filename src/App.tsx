@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import CardCreator from './components/CardCreator';
 import CardEditor from './components/CardEditor';
 import MainMenu from './components/MainMenu';
+import ViewCard from './components/ViewCard';
 import { useAuth } from './useAuth';
+import CreateCard from './pages/create-card';
 
 // Protect routes to require authentication
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user } = useAuth();
+  console.log(user, "user");
   return user ? children : <Navigate to="/login" replace />;
 };
 
@@ -24,6 +27,14 @@ const App: React.FC = () => {
         element={
           <RequireAuth>
             <MainMenu />
+          </RequireAuth>
+        }
+      />
+       <Route
+        path="/view-cards"
+        element={
+          <RequireAuth>
+            <ViewCard />
           </RequireAuth>
         }
       />
