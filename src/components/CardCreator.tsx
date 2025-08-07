@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "../useAuth";
 import { useNavigate } from "react-router-dom";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 import "./CardCreator.css";
 
 const CardCreator: React.FC = () => {
@@ -44,58 +46,35 @@ const CardCreator: React.FC = () => {
 
   const handleUpload = async () => {
     if (!user) {
-      setStatus("❌ Must be logged in to upload.");
-      return;
-    }
-
-    if (!file) {
-      setStatus("❌ No file selected.");
+      setStatus(" Must be logged in to upload.");
       return;
     }
 
     try {
-      setStatus("⏳ Requesting signed upload URL...");
-      const res = await fetch(
-        "https://us-central1-spellgrave-f2e30.cloudfunctions.net/getSignedUploadUrl",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fileName: `${Date.now()}_${file.name.replace(/[^\w.-]/g, "_")}`,
-            contentType: file.type,
-          }),
-        }
-      );
+      setStatus("⏳ Saving card to database...");
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Request failed");
+      await addDoc(collection(db, "cards"), {
+        ownerId: user.uid,
 
-      console.log("✅ Got signed URL:", data.url);
-      setStatus("⬆️ Uploading to signed URL...");
-
-      const uploadRes = await fetch(data.url, {
-        method: "PUT",
-        mode: "cors",
-        headers: {
-          "Content-Type": file.type,
-        },
-        body: file,
+        imageUrl: "",
+        gemImageUrl: "",
+        ...formData,
+        createdAt: new Date().toISOString(),
       });
 
-      if (!uploadRes.ok) {
-        const errorText = await uploadRes.text();
-        throw new Error(
-          `Upload failed. Status: ${uploadRes.status} – ${errorText}`
-        );
-      }
-
-      setStatus("✅ Upload successful! Image is now in Firebase Storage.");
-      console.log("✅ Upload complete:", data.url);
+      setStatus(" Card saved to Firestore!");
+      setFormData({
+        collectionName: "",
+        cardName: "",
+        creatureType: "",
+        description: "",
+        health: "",
+        attack: "",
+      });
+      setFile(null);
     } catch (err: any) {
-      console.error("❌ Upload error:", err);
-      setStatus(`❌ Upload failed: ${err.message || err}`);
+      console.error("Upload error:", err);
+      setStatus(`Upload failed: ${err.message || err}`);
     }
   };
 
@@ -107,12 +86,13 @@ const CardCreator: React.FC = () => {
       >
         Back to menu
       </button>
-      <div className="card-creator-container flex jus gap-6 min-h-screen  text-white p-6">
+
+      <div className="card-creator-container flex gap-6 min-h-screen text-white p-6">
         {/* Form Section */}
         <div className="form-section md:w-1/2 backdrop-brightness-50 border border-white p-6 rounded-xl shadow-lg space-y-4">
           <h2 className="text-2xl font-bold mb-4">Create Card</h2>
 
-          <form className="form-section space-y-4">
+          <form className="space-y-4">
             <div>
               <label className="block mb-1 font-medium">Card Image</label>
               <input
@@ -133,65 +113,33 @@ const CardCreator: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label className="block mb-1 font-medium">Collection Name</label>
-              <input
-                name="collectionName"
-                value={formData.collectionName}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Card Name</label>
-              <input
-                name="cardName"
-                value={formData.cardName}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Creature Type</label>
-              <input
-                name="creatureType"
-                value={formData.creatureType}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white resize-none"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Health</label>
-              <input
-                name="health"
-                value={formData.health}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Attack</label>
-              <input
-                name="attack"
-                value={formData.attack}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
-            </div>
+            {[
+              { name: "collectionName", label: "Collection Name" },
+              { name: "cardName", label: "Card Name" },
+              { name: "creatureType", label: "Creature Type" },
+              { name: "description", label: "Description", type: "textarea" },
+              { name: "health", label: "Health" },
+              { name: "attack", label: "Attack" },
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block mb-1 font-medium">{field.label}</label>
+                {field.type === "textarea" ? (
+                  <textarea
+                    name={field.name}
+                    value={(formData as any)[field.name]}
+                    onChange={handleInputChange}
+                    className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white resize-none"
+                  />
+                ) : (
+                  <input
+                    name={field.name}
+                    value={(formData as any)[field.name]}
+                    onChange={handleInputChange}
+                    className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
+                  />
+                )}
+              </div>
+            ))}
 
             <button
               type="button"
@@ -205,9 +153,8 @@ const CardCreator: React.FC = () => {
           <p className="mt-4 text-green-400">{status}</p>
         </div>
 
-        {/* Preview Section */}
-        <div className="  md:w-1/2">
-          <div className=" relative w-1/2 max-h-full left-40 bg-gray-800 border border-gray-700 rounded-xl p-6 text-white ">
+        <div className="md:w-1/2">
+          <div className="relative w-1/2 max-h-full left-40 bg-gray-800 border border-gray-700 rounded-xl p-6 text-white">
             {preview ? (
               <img
                 src={preview}
@@ -234,7 +181,7 @@ const CardCreator: React.FC = () => {
             <div className="italic text-gray-300">
               {formData.creatureType || "Creature Type"}
             </div>
-            <div className="description text-sm overflow-hidden break-words">
+            <div className="text-sm overflow-hidden break-words">
               {formData.description || "Card Description"}
             </div>
             <div className="flex justify-between text-sm mt-2">

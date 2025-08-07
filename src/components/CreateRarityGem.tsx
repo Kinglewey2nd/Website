@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { db } from "../firebase"; // only Firestore
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 
 const CreateRarityGem = () => {
   const navigate = useNavigate();
@@ -9,20 +11,46 @@ const CreateRarityGem = () => {
 
   const [formData, setFormData] = useState({
     GemName: "",
-    gemImage: ""
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] || null;
     if (selected) {
       setGemFile(selected);
-      setGemPreview(URL.createObjectURL(selected)); // Generate preview URL
+      setGemPreview(URL.createObjectURL(selected));
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.GemName || !gemFile) {
+      setStatus("Please provide both Gem Name and Image.");
+      return;
+    }
+
+    try {
+      const fileName = gemFile.name;
+
+      await addDoc(collection(db, "rarityGems"), {
+        gemName: formData.GemName,
+        fileName: fileName,
+        createdAt: Timestamp.now(),
+      });
+
+      setStatus(" Rarity gem saved with file name only!");
+      setFormData({ GemName: "" });
+      setGemFile(null);
+      setGemPreview("");
+    } catch (err: any) {
+      console.error(err);
+      setStatus("Save failed: " + (err.message || "Unknown error"));
+    }
   };
 
   return (
@@ -41,8 +69,7 @@ const CreateRarityGem = () => {
               Create Rarity Gem
             </h2>
 
-            <form className="space-y-4">
-              {/* Gem Image */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="block font-semibold text-gray-100 mb-1">
                   Gem image
@@ -63,7 +90,6 @@ const CreateRarityGem = () => {
                 )}
               </div>
 
-              {/* Text Inputs */}
               <div>
                 <label className="block font-semibold text-gray-100 mb-1">
                   Gem Name
@@ -80,22 +106,12 @@ const CreateRarityGem = () => {
               <button
                 type="submit"
                 className="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-500"
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent form submission
-                  setStatus("Collection created successfully!");
-                  setFormData({
-                    GemName: "",
-                    gemImage: ""
-                  });
-                  setGemFile(null);
-                  setGemPreview("");
-                }}
               >
                 Submit
               </button>
             </form>
 
-            <p className="mt-4 text-green-600 font-medium">{status}</p>
+            <p className="mt-4 text-green-400 font-medium">{status}</p>
           </div>
         </div>
       </div>
