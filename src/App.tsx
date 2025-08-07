@@ -7,6 +7,8 @@ import MainMenu from "./components/MainMenu";
 import ViewCard from "./components/ViewCard";
 import { useAuth } from "./useAuth";
 import CreateCard from "./pages/create-card";
+import CreateCollection from "./components/CreateCollection";
+import CreateRarityGem from "./components/CreateRarityGem";
 
 // Protect routes to require authentication
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -56,10 +58,26 @@ const App: React.FC = () => {
         }
       />
       <Route
+        path="/create-collection"
+        element={
+          <RequireAuth>
+            <CreateCollection />
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/card-editor"
         element={
           <RequireAuth>
             <CardEditor />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/create-rarity-gem"
+        element={
+          <RequireAuth>
+            <CreateRarityGem />
           </RequireAuth>
         }
       />

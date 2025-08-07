@@ -1,4 +1,5 @@
-import React from "react";
+import React, { use } from "react";
+import { useNavigate } from "react-router-dom";
 
 const cardData = [
   {
@@ -31,12 +32,13 @@ type Card = {
 
 
 const ViewCard = () => {
+  const navigate = useNavigate();
   return (
     <div className="p-6">
       {/* Back to Menu */}
       <button
         className="text-sm bg-gray-200 px-3 py-1 rounded shadow mb-6"
-        onClick={() => alert("Back to menu")}
+        onClick={() => {navigate(-1)}}
       >
         ← Back to Menu
       </button>

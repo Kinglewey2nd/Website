@@ -7,6 +7,7 @@ const admins = [
   "lwclark92@gmail.com",
   "neetinegi.codedrill@gmail.com",
   "dratidz@gmail.com",
+  "karan@codedrillinfotech.com"
 ];
 
 const MainMenu: React.FC = () => {
@@ -80,6 +81,18 @@ const MainMenu: React.FC = () => {
           >
             ➕ Card Creator
           </button>
+          <button
+            onClick={() => navigate("/create-collection")}
+            style={adminButtonStyle}
+          >
+            ➕ Create Collection
+          </button>
+          <button
+            onClick={() => navigate("/create-rarity-gem")}
+            style={adminButtonStyle}
+          >
+            ➕ Create Rarity gem
+          </button>
           <br />
           <button
             onClick={() => navigate("/card-editor")}
@@ -95,7 +108,7 @@ const MainMenu: React.FC = () => {
 
 const buttonStyle: React.CSSProperties = {
   margin: "1rem auto",
-  padding: "0.8rem 2rem",
+  padding: "1rem 1rem",
   fontSize: "1.2rem",
   backgroundColor: "#333",
   color: "white",
