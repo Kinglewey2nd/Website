@@ -12,7 +12,7 @@ const Profile: React.FC = () => {
   const auth = getAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
       if (user) {
         setUsername(user.displayName || user.email || 'Player');
 
@@ -31,7 +31,11 @@ const Profile: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>Loading profile...</div>;
+    return (
+      <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
+        Loading profile...
+      </div>
+    );
   }
 
   return (

@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { db } from "../firebase"; // only Firestore
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase'; // only Firestore
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 const CreateRarityGem = () => {
   const navigate = useNavigate();
   const [gemFile, setGemFile] = useState<File | null>(null);
-  const [gemPreview, setGemPreview] = useState<string>("");
-  const [status, setStatus] = useState("");
+  const [gemPreview, setGemPreview] = useState<string>('');
+  const [status, setStatus] = useState('');
 
   const [formData, setFormData] = useState({
-    GemName: "",
+    GemName: '',
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,33 +23,33 @@ const CreateRarityGem = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.GemName || !gemFile) {
-      setStatus("Please provide both Gem Name and Image.");
+      setStatus('Please provide both Gem Name and Image.');
       return;
     }
 
     try {
       const fileName = gemFile.name;
 
-      await addDoc(collection(db, "rarityGems"), {
+      await addDoc(collection(db, 'rarityGems'), {
         gemName: formData.GemName,
         fileName: fileName,
         createdAt: Timestamp.now(),
       });
 
-      setStatus(" Rarity gem saved with file name only!");
-      setFormData({ GemName: "" });
+      setStatus(' Rarity gem saved with file name only!');
+      setFormData({ GemName: '' });
       setGemFile(null);
-      setGemPreview("");
+      setGemPreview('');
     } catch (err: any) {
       console.error(err);
-      setStatus("Save failed: " + (err.message || "Unknown error"));
+      setStatus('Save failed: ' + (err.message || 'Unknown error'));
     }
   };
 

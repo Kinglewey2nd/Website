@@ -1,34 +1,34 @@
-import React, { useState } from "react";
-import { useAuth } from "../useAuth";
-import { useNavigate } from "react-router-dom";
-import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
-import "./CardCreator.css";
+import React, { useState } from 'react';
+import useAuth from '../useAuth';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import './CardCreator.css';
 
 const CardCreator: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [gemFile, setGemFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState("");
-  const [gemPreview, setGemPreview] = useState("");
-  const [status, setStatus] = useState("");
+  const [preview, setPreview] = useState('');
+  const [gemPreview, setGemPreview] = useState('');
+  const [status, setStatus] = useState('');
 
   const [formData, setFormData] = useState({
-    collectionName: "",
-    cardName: "",
-    creatureType: "",
-    description: "",
-    health: "",
-    attack: "",
+    collectionName: '',
+    cardName: '',
+    creatureType: '',
+    description: '',
+    health: '',
+    attack: '',
   });
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    type: "main" | "gem"
+    type: 'main' | 'gem'
   ) => {
     const selected = e.target.files?.[0] || null;
-    if (type === "main") {
+    if (type === 'main') {
       setFile(selected);
       if (selected) setPreview(URL.createObjectURL(selected));
     } else {
@@ -41,39 +41,39 @@ const CardCreator: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleUpload = async () => {
     if (!user) {
-      setStatus(" Must be logged in to upload.");
+      setStatus(' Must be logged in to upload.');
       return;
     }
 
     try {
-      setStatus("⏳ Saving card to database...");
+      setStatus('⏳ Saving card to database...');
 
-      await addDoc(collection(db, "cards"), {
+      await addDoc(collection(db, 'cards'), {
         ownerId: user.uid,
 
-        imageUrl: "",
-        gemImageUrl: "",
+        imageUrl: '',
+        gemImageUrl: '',
         ...formData,
         createdAt: new Date().toISOString(),
       });
 
-      setStatus(" Card saved to Firestore!");
+      setStatus(' Card saved to Firestore!');
       setFormData({
-        collectionName: "",
-        cardName: "",
-        creatureType: "",
-        description: "",
-        health: "",
-        attack: "",
+        collectionName: '',
+        cardName: '',
+        creatureType: '',
+        description: '',
+        health: '',
+        attack: '',
       });
       setFile(null);
     } catch (err: any) {
-      console.error("Upload error:", err);
+      console.error('Upload error:', err);
       setStatus(`Upload failed: ${err.message || err}`);
     }
   };
@@ -98,7 +98,7 @@ const CardCreator: React.FC = () => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "main")}
+                onChange={e => handleFileChange(e, 'main')}
                 className="block w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-500"
               />
             </div>
@@ -108,22 +108,22 @@ const CardCreator: React.FC = () => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "gem")}
+                onChange={e => handleFileChange(e, 'gem')}
                 className="block w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-500"
               />
             </div>
 
             {[
-              { name: "collectionName", label: "Collection Name" },
-              { name: "cardName", label: "Card Name" },
-              { name: "creatureType", label: "Creature Type" },
-              { name: "description", label: "Description", type: "textarea" },
-              { name: "health", label: "Health" },
-              { name: "attack", label: "Attack" },
-            ].map((field) => (
+              { name: 'collectionName', label: 'Collection Name' },
+              { name: 'cardName', label: 'Card Name' },
+              { name: 'creatureType', label: 'Creature Type' },
+              { name: 'description', label: 'Description', type: 'textarea' },
+              { name: 'health', label: 'Health' },
+              { name: 'attack', label: 'Attack' },
+            ].map(field => (
               <div key={field.name}>
                 <label className="block mb-1 font-medium">{field.label}</label>
-                {field.type === "textarea" ? (
+                {field.type === 'textarea' ? (
                   <textarea
                     name={field.name}
                     value={(formData as any)[field.name]}
@@ -176,20 +176,20 @@ const CardCreator: React.FC = () => {
             )}
 
             <div className="text-2xl max-w-full font-bold mt-4">
-              {formData.cardName || "Card Name"}
+              {formData.cardName || 'Card Name'}
             </div>
             <div className="italic text-gray-300">
-              {formData.creatureType || "Creature Type"}
+              {formData.creatureType || 'Creature Type'}
             </div>
             <div className="text-sm overflow-hidden break-words">
-              {formData.description || "Card Description"}
+              {formData.description || 'Card Description'}
             </div>
             <div className="flex justify-between text-sm mt-2">
               <span className="text-red-400">
-                ❤️ {formData.health || "Health"}
+                ❤️ {formData.health || 'Health'}
               </span>
               <span className="text-blue-400">
-                ⚔️ {formData.attack || "Attack"}
+                ⚔️ {formData.attack || 'Attack'}
               </span>
             </div>
           </div>

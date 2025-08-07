@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../firebase";
+import React, { useState } from 'react';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const ResetPassword: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
   const handleReset = async () => {
     try {
       await sendPasswordResetEmail(auth, email);
-      alert("Reset email sent!");
+      alert('Reset email sent!');
     } catch (error) {
-      alert("Reset failed: " + (error as any).message);
+      alert('Reset failed: ' + (error as any).message);
     }
   };
 
@@ -21,7 +21,7 @@ const ResetPassword: React.FC = () => {
         type="email"
         placeholder="Email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
       />
       <button onClick={handleReset}>Send Reset Email</button>
     </div>

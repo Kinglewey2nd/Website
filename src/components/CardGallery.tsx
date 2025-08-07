@@ -25,7 +25,7 @@ const CardGallery: React.FC = () => {
   const fetchCards = async () => {
     const querySnapshot = await getDocs(collection(db, 'cards'));
     const loadedCards: CardData[] = [];
-    querySnapshot.forEach((docSnap) => {
+    querySnapshot.forEach(docSnap => {
       loadedCards.push({ id: docSnap.id, ...docSnap.data() } as CardData);
     });
     setCards(loadedCards);
@@ -63,7 +63,12 @@ const CardGallery: React.FC = () => {
             />
             <div style={{ marginTop: '0.5rem' }}>
               <button onClick={() => handleEdit(card)}>✏️ Edit</button>
-              <button onClick={() => handleDelete(card.id)} style={{ marginLeft: '0.5rem' }}>🗑️ Delete</button>
+              <button
+                onClick={() => handleDelete(card.id)}
+                style={{ marginLeft: '0.5rem' }}
+              >
+                🗑️ Delete
+              </button>
             </div>
           </div>
         ))}

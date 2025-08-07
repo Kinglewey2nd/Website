@@ -1,15 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lora&display=swap");
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lora&display=swap');
+@import 'tailwindcss';
 
 body {
   margin: 0;
-  font-family: "Lora", serif;
-  background: url("/bg-swirl.jpg") center center / cover fixed no-repeat;
+  font-family: 'Lora', serif;
+  background: url('/bg-swirl.jpg') center center / cover fixed no-repeat;
   color: #eee;
 }
 h1,
 h2,
 h3 {
-  font-family: "Cinzel", serif;
+  font-family: 'Cinzel', serif;
   color: white;
 }

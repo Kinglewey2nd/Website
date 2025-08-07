@@ -23,7 +23,7 @@
 }
 
 .card-preview {
-  background-image: url("/card-frame-template.png");
+  background-image: url('/card-frame-template.png');
   background-size: cover;
   width: 250px;
   height: 350px;

@@ -33,7 +33,9 @@ export default function Collection() {
           textAlign: 'center',
         }}
       >
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>My Collection</h2>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>
+          My Collection
+        </h2>
         <div
           style={{
             display: 'flex',
@@ -59,10 +61,10 @@ export default function Collection() {
                   card.rarity === 'Mythic'
                     ? 'purple'
                     : card.rarity === 'Epic'
-                    ? 'orange'
-                    : card.rarity === 'Rare'
-                    ? 'blue'
-                    : 'gray'
+                      ? 'orange'
+                      : card.rarity === 'Rare'
+                        ? 'blue'
+                        : 'gray'
                 }`,
               }}
             >

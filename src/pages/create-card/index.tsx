@@ -1,2 +1,2 @@
-import CreateCard from "./components/CreateCard";
+import CreateCard from './components/CreateCard';
 export default CreateCard;

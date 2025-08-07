@@ -1,23 +1,21 @@
-import React, { JSX } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/Login";
-import CardCreator from "./components/CardCreator";
-import CardEditor from "./components/CardEditor";
-import MainMenu from "./components/MainMenu";
-import ViewCard from "./components/ViewCard";
-import { useAuth } from "./useAuth";
-import CreateCard from "./pages/create-card";
-import CreateCollection from "./components/CreateCollection";
-import CreateRarityGem from "./components/CreateRarityGem";
+import React, { JSX } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './components/Login';
+import CardCreator from './components/CardCreator';
+import CardEditor from './components/CardEditor';
+import MainMenu from './components/MainMenu';
+import ViewCard from './components/ViewCard';
+import useAuth from './useAuth';
+import CreateCollection from './components/CreateCollection';
+import CreateRarityGem from './components/CreateRarityGem';
 
 // Protect routes to require authentication
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
 
-  // Show loading state while checking authentication
   if (loading) {
     return (
-      <div style={{ color: "white", textAlign: "center", marginTop: "5rem" }}>
+      <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
         Loading...
       </div>
     );

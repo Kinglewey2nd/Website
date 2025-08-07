@@ -11,7 +11,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       className={classNames(
-        "rounded-lg border bg-card text-card-foreground shadow-sm",
+        'rounded-lg border bg-card text-card-foreground shadow-sm',
         className
       )}
       {...props}
@@ -21,7 +21,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   )
 );
 
-Card.displayName = "Card";
+Card.displayName = 'Card';
 
 interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
@@ -32,7 +32,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...props }, ref) => (
     <div
       ref={ref}
-      className={classNames("flex flex-col space-y-1.5 p-6", className)}
+      className={classNames('flex flex-col space-y-1.5 p-6', className)}
       {...props}
     >
       {children}
@@ -40,7 +40,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
   )
 );
 
-CardHeader.displayName = "CardHeader";
+CardHeader.displayName = 'CardHeader';
 
 interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   className?: string;
@@ -52,7 +52,7 @@ export const CardTitle = React.forwardRef<HTMLParagraphElement, CardTitleProps>(
     <h3
       ref={ref}
       className={classNames(
-        "text-2xl font-semibold leading-none tracking-tight",
+        'text-2xl font-semibold leading-none tracking-tight',
         className
       )}
       {...props}
@@ -62,7 +62,7 @@ export const CardTitle = React.forwardRef<HTMLParagraphElement, CardTitleProps>(
   )
 );
 
-CardTitle.displayName = "CardTitle";
+CardTitle.displayName = 'CardTitle';
 
 interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
@@ -71,14 +71,10 @@ interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={classNames("p-6 pt-0", className)}
-      {...props}
-    >
+    <div ref={ref} className={classNames('p-6 pt-0', className)} {...props}>
       {children}
     </div>
   )
 );
 
-CardContent.displayName = "CardContent";
+CardContent.displayName = 'CardContent';

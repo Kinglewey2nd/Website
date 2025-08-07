@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/firebase"; // Make sure this exports `db = getFirestore(app)`
-import { useAuth } from "@/useAuth";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/firebase'; // Make sure this exports `db = getFirestore(app)`
+import useAuth from '@/useAuth';
 
 const CreateCollection = () => {
   const { user } = useAuth();
@@ -10,25 +10,25 @@ const CreateCollection = () => {
 
   const [file, setFile] = useState<File | null>(null);
   const [gemFile, setGemFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState("");
-  const [gemPreview, setGemPreview] = useState("");
-  const [status, setStatus] = useState("");
+  const [preview, setPreview] = useState('');
+  const [gemPreview, setGemPreview] = useState('');
+  const [status, setStatus] = useState('');
 
   const [formData, setFormData] = useState({
-    collectionName: "",
-    FlavorText: "",
-    NormalFrame: "",
-    FoilVersionFrame: "",
+    collectionName: '',
+    FlavorText: '',
+    NormalFrame: '',
+    FoilVersionFrame: '',
   });
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    type: "NormalFrame" | "FoilVersionFrame"
+    type: 'NormalFrame' | 'FoilVersionFrame'
   ) => {
     const selected = e.target.files?.[0] || null;
     if (!selected) return;
 
-    if (type === "NormalFrame") {
+    if (type === 'NormalFrame') {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
@@ -41,24 +41,24 @@ const CreateCollection = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!user) {
-      setStatus("⚠️ You must be signed in to create a collection.");
+      setStatus('⚠️ You must be signed in to create a collection.');
       return;
     }
 
     if (!formData.collectionName || !formData.FlavorText || !file || !gemFile) {
-      setStatus("⚠️ All fields and images are required.");
+      setStatus('⚠️ All fields and images are required.');
       return;
     }
 
     try {
-      await addDoc(collection(db, "collections"), {
+      await addDoc(collection(db, 'collections'), {
         collectionName: formData.collectionName,
         flavorText: formData.FlavorText,
         normalFrame: file.name,
@@ -67,20 +67,20 @@ const CreateCollection = () => {
         createdAt: new Date(),
       });
 
-      setStatus(" Collection created successfully!");
+      setStatus(' Collection created successfully!');
       setFormData({
-        collectionName: "",
-        FlavorText: "",
-        NormalFrame: "",
-        FoilVersionFrame: "",
+        collectionName: '',
+        FlavorText: '',
+        NormalFrame: '',
+        FoilVersionFrame: '',
       });
       setFile(null);
       setGemFile(null);
-      setPreview("");
-      setGemPreview("");
+      setPreview('');
+      setGemPreview('');
     } catch (err) {
-      console.error(" Firestore save error:", err);
-      setStatus(" Failed to save collection. Try again.");
+      console.error(' Firestore save error:', err);
+      setStatus(' Failed to save collection. Try again.');
     }
   };
 
@@ -109,7 +109,7 @@ const CreateCollection = () => {
                 type="file"
                 accept="image/*"
                 required
-                onChange={(e) => handleFileChange(e, "NormalFrame")}
+                onChange={e => handleFileChange(e, 'NormalFrame')}
                 className="block w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-500"
               />
               {preview && (
@@ -125,7 +125,7 @@ const CreateCollection = () => {
                 type="file"
                 accept="image/*"
                 required
-                onChange={(e) => handleFileChange(e, "FoilVersionFrame")}
+                onChange={e => handleFileChange(e, 'FoilVersionFrame')}
                 className="block w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-500"
               />
               {gemPreview && (

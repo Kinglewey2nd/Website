@@ -15,7 +15,9 @@ const PreviewPage: React.FC = () => {
       try {
         const cardsFolderRef = ref(storage, 'cards'); // this matches the folder used in your upload
         const result = await listAll(cardsFolderRef);
-        const urls = await Promise.all(result.items.map(item => getDownloadURL(item)));
+        const urls = await Promise.all(
+          result.items.map(item => getDownloadURL(item))
+        );
         setImageUrls(urls);
       } catch (error) {
         console.error('❌ Failed to list card images:', error);
@@ -31,12 +33,14 @@ const PreviewPage: React.FC = () => {
     <div style={{ padding: '3rem', color: 'white' }}>
       <h1 style={{ textAlign: 'center' }}>🖼️ All Uploaded Cards</h1>
       {loading && <p>Loading cards from Firebase Storage...</p>}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '1.5rem',
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '1.5rem',
+        }}
+      >
         {imageUrls.map((url, i) => (
           <CardPreview
             key={i}
