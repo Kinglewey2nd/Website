@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { useAuth } from "../useAuth";
 
-const admins = ["lwclark92@gmail.com", "neetinegi.codedrill@gmail.com", ""];
+const admins = [
+  "lwclark92@gmail.com",
+  "neetinegi.codedrill@gmail.com",
+  "dratidz@gmail.com",
+];
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
