@@ -1,43 +1,57 @@
-const functions = require('firebase-functions');
-const { getStorage } = require('firebase-admin/storage');
-const admin = require('firebase-admin');
+import { https } from 'firebase-functions';
+import { getStorage } from 'firebase-admin/storage';
+import  admin  from 'firebase-admin';
+import multer from 'multer';
+import cors from 'cors';
+import path from 'path';
 
 admin.initializeApp();
 
-exports.getSignedUploadUrl = functions.https.onRequest(async (req, res) => {
-  // CORS headers
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// Multer config to handle file uploads
+const upload = multer({ storage: multer.memoryStorage() });
+const bucket = getStorage().bucket('spellgrave-f2e30.appspot.com');
 
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    res.status(204).send('');
-    return;
-  }
-
-  try {
-    const { fileName, contentType } = req.body;
-
-    if (!fileName || !contentType) {
-      return res.status(400).json({ error: 'Missing fileName or contentType' });
+export const getImageUrl = https.onRequest((req, res) => {
+  cors({ origin: true })(req, res, async () => {
+    if (req.method === 'OPTIONS') {
+      return res.status(204).send('');
     }
 
-    // Use the correct bucket name here
-    const bucket = getStorage().bucket('spellgrave-f2e30');
-    const file = bucket.file(`cards/${fileName}`);
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method Not Allowed' });
+    }
 
-    const [url] = await file.getSignedUrl({
-      version: 'v4',
-      action: 'write',
-      expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-      contentType,
+    // Multer middleware to parse form-data
+    upload.single('gemImage')(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      try {
+        const fileName = `${Date.now()}_${req.file.originalname}`;
+        const file = bucket.file(`cards/${fileName}`);
+
+        // Upload buffer to GCS 
+        await file.save(req.file.buffer, {
+          metadata: { contentType: req.file.mimetype },
+          public: true,
+        });
+
+        // Make file public
+        await file.makePublic();
+
+        // Public URL
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/cards/${fileName}`;
+
+        return res.status(200).json({ url: publicUrl });
+      } catch (error) {
+        console.error('Upload error:', error);
+        return res.status(500).json({ error: 'Failed to upload image' });
+      }
     });
-
-    console.log('✅ Generated signed URL:', url);
-    res.status(200).json({ url });
-  } catch (error) {
-    console.error('🔥 Error generating signed URL:', error);
-    res.status(500).json({ error: 'Failed to generate signed URL' });
-  }
+  });
 });

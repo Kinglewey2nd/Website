@@ -1,91 +1,81 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addDoc, collection } from 'firebase/firestore';
-import { db } from '@/firebase'; // Make sure this exports `db = getFirestore(app)`
+import { useForm } from 'react-hook-form';
+import { db } from '@/firebase';
 import useAuth from '@/useAuth';
+
+type FormValues = {
+  collectionName: string;
+  FlavorText: string;
+  NormalFrame: FileList;
+  FoilVersionFrame: FileList;
+};
 
 const CreateCollection = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [file, setFile] = useState<File | null>(null);
-  const [gemFile, setGemFile] = useState<File | null>(null);
   const [preview, setPreview] = useState('');
   const [gemPreview, setGemPreview] = useState('');
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    collectionName: '',
-    FlavorText: '',
-    NormalFrame: '',
-    FoilVersionFrame: '',
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<FormValues>();
 
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: 'NormalFrame' | 'FoilVersionFrame'
-  ) => {
-    const selected = e.target.files?.[0] || null;
-    if (!selected) return;
+  // Watch file inputs to update previews
+  const normalFrameFile = watch('NormalFrame');
+  const foilFrameFile = watch('FoilVersionFrame');
 
-    if (type === 'NormalFrame') {
-      setFile(selected);
-      setPreview(URL.createObjectURL(selected));
-    } else {
-      setGemFile(selected);
-      setGemPreview(URL.createObjectURL(selected));
+  React.useEffect(() => {
+    if (normalFrameFile && normalFrameFile.length > 0) {
+      setPreview(URL.createObjectURL(normalFrameFile[0]));
     }
-  };
+  }, [normalFrameFile]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  React.useEffect(() => {
+    if (foilFrameFile && foilFrameFile.length > 0) {
+      setGemPreview(URL.createObjectURL(foilFrameFile[0]));
+    }
+  }, [foilFrameFile]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: FormValues) => {
     if (!user) {
       setStatus('⚠️ You must be signed in to create a collection.');
       return;
     }
 
-    if (!formData.collectionName || !formData.FlavorText || !file || !gemFile) {
-      setStatus('⚠️ All fields and images are required.');
-      return;
-    }
-
     try {
+      setLoading(true);
       await addDoc(collection(db, 'collections'), {
-        collectionName: formData.collectionName,
-        flavorText: formData.FlavorText,
-        normalFrame: file.name,
-        foilVersionFrame: gemFile.name,
+        collectionName: data.collectionName,
+        flavorText: data.FlavorText,
+        normalFrame: data.NormalFrame[0]?.name,
+        foilVersionFrame: data.FoilVersionFrame[0]?.name,
         ownerId: user.uid,
         createdAt: new Date(),
       });
 
-      setStatus(' Collection created successfully!');
-      setFormData({
-        collectionName: '',
-        FlavorText: '',
-        NormalFrame: '',
-        FoilVersionFrame: '',
-      });
-      setFile(null);
-      setGemFile(null);
+      setStatus('Collection created successfully!');
+      reset();
       setPreview('');
       setGemPreview('');
+      setLoading(false);
     } catch (err) {
-      console.error(' Firestore save error:', err);
-      setStatus(' Failed to save collection. Try again.');
+      setLoading(false);
+      console.error('Firestore save error:', err);
+      setStatus('Failed to save collection. Try again.');
     }
   };
 
   return (
-    <div className="p-10  h-screen">
+    <div className="p-10 h-screen">
       <button
         type="button"
         className="mb-4 w-[250px] px-4 py-2 bg-gray-100 text-white rounded-md hover:bg-gray-700 transition"
@@ -95,39 +85,57 @@ const CreateCollection = () => {
       </button>
 
       <div className="flex items-center justify-center">
-        <div className="md:w-[40%] border border-amber-50 backdrop-brightness-50 rounded-2xl shadow-xl p-6">
+        <div className="md:w-[40%] bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-100">
             Create Collection
           </h2>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            {/* Normal Frame */}
             <div>
               <label className="block font-semibold text-gray-100 mb-1">
-                Normal Frame
+                Normal Frame{" "}
+                <sup className="text-pink-700 text-base">*</sup>
               </label>
               <input
                 type="file"
                 accept="image/*"
-                required
-                onChange={e => handleFileChange(e, 'NormalFrame')}
-                className="block w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-500"
+                {...register('NormalFrame', {
+                  required: 'Normal frame is required',
+                })}
+                className="block w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-2 text-gray-200
+                  file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+              {errors.NormalFrame && (
+                <p className="text-red-400 text-sm">
+                  {errors.NormalFrame.message}
+                </p>
+              )}
               {preview && (
                 <img src={preview} alt="NormalFrame" style={{ width: 150 }} />
               )}
             </div>
 
+            {/* Foil Version Frame */}
             <div>
               <label className="block font-semibold text-gray-100 mb-1">
-                Foil Version Frame
+                Foil Version Frame{' '}
+                <sup className="text-pink-700 text-base">*</sup>
               </label>
               <input
                 type="file"
                 accept="image/*"
-                required
-                onChange={e => handleFileChange(e, 'FoilVersionFrame')}
-                className="block w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-500"
+                {...register('FoilVersionFrame', {
+                  required: 'Foil version frame is required',
+                })}
+                className="block w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-2 text-gray-200
+                file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
+              {errors.FoilVersionFrame && (
+                <p className="text-red-400 text-sm">
+                  {errors.FoilVersionFrame.message}
+                </p>
+              )}
               {gemPreview && (
                 <img
                   src={gemPreview}
@@ -137,41 +145,51 @@ const CreateCollection = () => {
               )}
             </div>
 
+            {/* Collection Name */}
             <div>
               <label className="block font-semibold text-gray-100 mb-1">
-                Collection Name
+                Collection Name <sup className="text-pink-700 text-base">*</sup>
               </label>
               <input
-                name="collectionName"
-                required
-                value={formData.collectionName}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
+                {...register('collectionName', {
+                  required: 'Collection name is required',
+                })}
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                />
+              {errors.collectionName && (
+                <p className="text-red-400 text-sm">
+                  {errors.collectionName.message}
+                </p>
+              )}
             </div>
 
+            {/* Flavor Text */}
             <div>
               <label className="block font-semibold text-gray-100 mb-1">
-                Flavor Text
+                Flavor Text <sup className="text-pink-700 text-base">*</sup>
               </label>
               <input
-                name="FlavorText"
-                required
-                value={formData.FlavorText}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-200 rounded-xl px-3 py-3 text-white"
-              />
+                {...register('FlavorText', {
+                  required: 'Flavor text is required',
+                })}
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                />
+              {errors.FlavorText && (
+                <p className="text-red-400 text-sm">
+                  {errors.FlavorText.message}
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
               className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-500"
             >
-              Submit
+              {loading ? 'Creating...' : 'Create Collection'}
             </button>
           </form>
 
-          <p className="mt-4 text-green-500 font-medium">{status}</p>
+          <p className="mt-4 text-green-500 font-medium text-center">{status}</p>
         </div>
       </div>
     </div>
