@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useAuth from '../useAuth';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import './CardCreator.css';
 
 const inputs = [
-  { name: 'collectionName', label: 'Collection Name', type: 'text' },
   { name: 'cardName', label: 'Card Name', type: 'text' },
   { name: 'creatureType', label: 'Creature Type', type: 'text' },
   { name: 'description', label: 'Description', type: 'textarea' },
@@ -17,7 +16,7 @@ const inputs = [
 ];
 
 interface FormValues {
-  collectionName: string;
+  collection: string;
   cardName: string;
   creatureType: string;
   description: string;
@@ -38,7 +37,7 @@ const CardCreator: React.FC = () => {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      collectionName: '',
+      collection: '',
       cardName: '',
       creatureType: '',
       description: '',
@@ -53,6 +52,44 @@ const CardCreator: React.FC = () => {
   const [gemPreview, setGemPreview] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoaading] = useState(false);
+  const [collectionsList, setCollectionsList] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [RarityList, setRarityList] = useState<
+    { id: string; name: string; file: string }[]
+  >([]);
+  const [selectedGem, setSelectedGem] = useState('');
+
+  const fetchRaarity = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'rarityGems'));
+      const result = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().gemName || 'Untitled',
+        file: doc.data().fileName || '',
+      }));
+      setRarityList(result);
+    } catch (err) {
+      console.error('Error fetching rarity:', err);
+    }
+  };
+  const fetchCollections = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'collections'));
+      const fetched = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().collectionName || 'Untitled',
+      }));
+      setCollectionsList(fetched);
+    } catch (err) {
+      console.error('Error fetching collections:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCollections();
+    fetchRaarity();
+  }, []);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -62,9 +99,6 @@ const CardCreator: React.FC = () => {
     if (type === 'main') {
       setFile(selected);
       if (selected) setPreview(URL.createObjectURL(selected));
-    } else {
-      setGemFile(selected);
-      if (selected) setGemPreview(URL.createObjectURL(selected));
     }
   };
 
@@ -84,8 +118,8 @@ const CardCreator: React.FC = () => {
 
       await addDoc(collection(db, 'cards'), {
         ownerId: user.uid,
-        imageUrl: '',
-        gemImageUrl: '',
+        imageUrl: preview,
+        gemImageUrl: gemPreview,
         ...data,
         createdAt: new Date().toISOString(),
       });
@@ -126,31 +160,65 @@ const CardCreator: React.FC = () => {
                 accept="image/*"
                 onChange={e => handleFileChange(e, 'main')}
                 className="block w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-2 text-gray-200
-                  file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Rarity Gem Image </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={e => handleFileChange(e, 'gem')}
-                className="block w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-2 text-gray-200
                 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
 
+            <div>
+              <label className="block mb-1 font-medium">Rarity Gem </label>
+              <select
+                value={selectedGem} // bind the value
+                onChange={e => {
+                  const value = e.target.value;
+                  setSelectedGem(value); // update selected
+                  const foundGem = RarityList.find(gem => gem.file === value);
+                  setGemPreview(foundGem ? foundGem.file : '');
+                }}
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-4 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              >
+                <option value="" disabled>
+                  Select Rarity Type
+                </option>
+                {RarityList.map(gem => (
+                  <option key={gem.id} value={gem.file}>
+                    {gem.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">
+                Collection Name <sup className="text-pink-700 text-base">*</sup>
+              </label>
+              <select
+                {...register('collection', {
+                  required: 'Collection Name is required',
+                })}
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-4 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              >
+                <option value="" disabled className="text-white">
+                  Select a collection
+                </option>
+                {collectionsList.map(col => (
+                  <option key={col.id} value={col.id}>
+                    {col.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             {inputs.map(field => (
               <div key={field.name}>
-                <label className="block mb-1 font-medium">{field.label} <sup className='text-pink-700 text-base'>*</sup></label>
+                <label className="block mb-1 font-medium">
+                  {field.label} <sup className="text-pink-700 text-base">*</sup>
+                </label>
                 {field.type === 'textarea' && (
                   <textarea
                     {...register(field.name as keyof FormValues, {
                       required: `${field.label} is required`,
                     })}
                     className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    />
+                  />
                 )}
                 {field.type === 'text' && (
                   <input
@@ -158,7 +226,7 @@ const CardCreator: React.FC = () => {
                       required: `${field.label} is required`,
                     })}
                     className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    />
+                  />
                 )}
 
                 {field.type === 'number' && (
@@ -169,7 +237,7 @@ const CardCreator: React.FC = () => {
                       valueAsNumber: true,
                     })}
                     className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    />
+                  />
                 )}
                 {errors[field.name as keyof FormValues] && (
                   <p className="text-red-400 text-sm">

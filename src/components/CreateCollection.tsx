@@ -91,11 +91,44 @@ const CreateCollection = () => {
           </h2>
 
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            {/* Collection Name */}
+            <div>
+              <label className="block font-semibold text-gray-100 mb-1">
+                Collection Name <sup className="text-pink-700 text-base">*</sup>
+              </label>
+              <input
+                {...register('collectionName', {
+                  required: 'Collection name is required',
+                })}
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              />
+              {errors.collectionName && (
+                <p className="text-red-400 text-sm">
+                  {errors.collectionName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Flavor Text */}
+            <div>
+              <label className="block font-semibold text-gray-100 mb-1">
+                Flavor Text
+              </label>
+              <input
+                {...register('FlavorText', {})}
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              />
+              {errors.FlavorText && (
+                <p className="text-red-400 text-sm">
+                  {errors.FlavorText.message}
+                </p>
+              )}
+            </div>
+
             {/* Normal Frame */}
             <div>
               <label className="block font-semibold text-gray-100 mb-1">
-                Normal Frame{" "}
-                <sup className="text-pink-700 text-base">*</sup>
+                Normal Frame <sup className="text-pink-700 text-base">*</sup>
               </label>
               <input
                 type="file"
@@ -145,42 +178,6 @@ const CreateCollection = () => {
               )}
             </div>
 
-            {/* Collection Name */}
-            <div>
-              <label className="block font-semibold text-gray-100 mb-1">
-                Collection Name <sup className="text-pink-700 text-base">*</sup>
-              </label>
-              <input
-                {...register('collectionName', {
-                  required: 'Collection name is required',
-                })}
-                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
-              {errors.collectionName && (
-                <p className="text-red-400 text-sm">
-                  {errors.collectionName.message}
-                </p>
-              )}
-            </div>
-
-            {/* Flavor Text */}
-            <div>
-              <label className="block font-semibold text-gray-100 mb-1">
-                Flavor Text <sup className="text-pink-700 text-base">*</sup>
-              </label>
-              <input
-                {...register('FlavorText', {
-                  required: 'Flavor text is required',
-                })}
-                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
-              {errors.FlavorText && (
-                <p className="text-red-400 text-sm">
-                  {errors.FlavorText.message}
-                </p>
-              )}
-            </div>
-
             <button
               type="submit"
               className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-500"
@@ -189,7 +186,9 @@ const CreateCollection = () => {
             </button>
           </form>
 
-          <p className="mt-4 text-green-500 font-medium text-center">{status}</p>
+          <p className="mt-4 text-green-500 font-medium text-center">
+            {status}
+          </p>
         </div>
       </div>
     </div>

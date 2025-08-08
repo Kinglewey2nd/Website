@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { useForm } from 'react-hook-form'; 
+import { useForm } from 'react-hook-form';
 
 type FormValues = {
   GemName: string;
@@ -75,7 +75,7 @@ const CreateRarityGem = () => {
         throw new Error('Failed to upload file to storage');
       }
 
-      console.log("url of file =",url)
+      console.log('url of file =', url);
 
       // Step 3 — Get public file URL
 
@@ -111,14 +111,37 @@ const CreateRarityGem = () => {
       <div className="flex items-center justify-center">
         <div className="md:w-[420px] w-full bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-3xl font-bold mb-6 text-white text-center">
-            Create Rarity Gem
+            Create Rarity Type
           </h2>
 
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+            {/* Gem Name */}
+            <div>
+              <label className="block font-semibold text-gray-200 mb-2">
+                Rarity Name
+              </label>
+              <input
+                {...register('GemName', {
+                  required: 'Gem name is required',
+                  minLength: {
+                    value: 2,
+                    message: 'Gem name must be at least 2 characters',
+                  },
+                })}
+                placeholder="Enter gem name"
+                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              />
+              {errors.GemName && (
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.GemName.message}
+                </p>
+              )}
+            </div>
+
             {/* Gem Image */}
             <div>
               <label className="block font-semibold text-gray-200 mb-2">
-                Gem Image
+                Rarity Image
               </label>
               <input
                 type="file"
@@ -149,29 +172,6 @@ const CreateRarityGem = () => {
               )}
             </div>
 
-            {/* Gem Name */}
-            <div>
-              <label className="block font-semibold text-gray-200 mb-2">
-                Gem Name
-              </label>
-              <input
-                {...register('GemName', {
-                  required: 'Gem name is required',
-                  minLength: {
-                    value: 2,
-                    message: 'Gem name must be at least 2 characters',
-                  },
-                })}
-                placeholder="Enter gem name"
-                className="w-full bg-gray-700/70 border border-gray-600 rounded-lg px-3 py-3 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              {errors.GemName && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.GemName.message}
-                </p>
-              )}
-            </div>
-
             {/* Submit Button */}
             <button
               type="submit"
@@ -182,7 +182,7 @@ const CreateRarityGem = () => {
                   : 'bg-purple-600 hover:bg-purple-500'
               }`}
             >
-              {loading ? 'Creating...' : 'Create Rarity Gem'}
+              {loading ? 'Creating...' : 'Create Rarity Type'}
             </button>
           </form>
 
