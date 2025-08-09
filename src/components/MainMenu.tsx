@@ -8,6 +8,7 @@ const admins = [
   'neetinegi.codedrill@gmail.com',
   'dratidz@gmail.com',
   'karan@codedrillinfotech.com',
+  'nitin@codedrillinfotech.com',
 ];
 
 const MainMenu: React.FC = () => {
