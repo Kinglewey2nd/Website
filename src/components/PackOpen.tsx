@@ -1,5 +1,4 @@
-// src/components/PackOpen.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import {
   getFirestore,
@@ -50,7 +49,7 @@ const PackOpen: React.FC = () => {
       });
     }
 
-    const newCards = cards.map((card) => ({
+    const newCards = cards.map(card => ({
       ...card,
       id: crypto.randomUUID(),
     }));
@@ -79,16 +78,18 @@ const PackOpen: React.FC = () => {
       <h1>Pack Opening</h1>
 
       {showXPBanner && (
-        <div style={{
-          backgroundColor: '#222',
-          color: '#FFD700',
-          padding: '1rem 2rem',
-          borderRadius: '12px',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          marginBottom: '1.5rem',
-          animation: 'fadein 0.5s ease-in-out',
-        }}>
+        <div
+          style={{
+            backgroundColor: '#222',
+            color: '#FFD700',
+            padding: '1rem 2rem',
+            borderRadius: '12px',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            marginBottom: '1.5rem',
+            animation: 'fadein 0.5s ease-in-out',
+          }}
+        >
           🎉 You gained 50 XP!
         </div>
       )}

@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import CardCreator from './components/CardCreator';
 import CardEditor from './components/CardEditor';
 import MainMenu from './components/MainMenu';
-import { useAuth } from './useAuth';
+import ViewCard from './components/ViewCard';
+import useAuth from './useAuth';
+import CreateCollection from './components/CreateCollection';
+import CreateRarityGem from './components/CreateRarityGem';
 
 // Protect routes to require authentication
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
+        Loading...
+      </div>
+    );
+  }
+
   return user ? children : <Navigate to="/login" replace />;
 };
 
@@ -28,6 +40,14 @@ const App: React.FC = () => {
         }
       />
       <Route
+        path="/view-cards"
+        element={
+          <RequireAuth>
+            <ViewCard />
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/card-creator"
         element={
           <RequireAuth>
@@ -36,10 +56,26 @@ const App: React.FC = () => {
         }
       />
       <Route
+        path="/create-collection"
+        element={
+          <RequireAuth>
+            <CreateCollection />
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/card-editor"
         element={
           <RequireAuth>
             <CardEditor />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/create-rarity-gem"
+        element={
+          <RequireAuth>
+            <CreateRarityGem />
           </RequireAuth>
         }
       />

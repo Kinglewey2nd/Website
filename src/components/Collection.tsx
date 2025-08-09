@@ -28,7 +28,11 @@ const Collection: React.FC = () => {
       {cards.map((card, idx) => (
         <div key={idx}>{card}</div>
       ))}
-      <button onClick={() => navigate('/menu')} className="back-button" style={{ marginTop: '2rem' }}>
+      <button
+        onClick={() => navigate('/menu')}
+        className="back-button"
+        style={{ marginTop: '2rem' }}
+      >
         Back to Menu
       </button>
     </div>

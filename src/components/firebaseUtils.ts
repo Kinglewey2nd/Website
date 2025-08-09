@@ -1,7 +1,11 @@
-import { getFirestore, collection, addDoc, Timestamp, doc, updateDoc } from 'firebase/firestore';
-import { app } from '../firebase';
-
-const db = getFirestore(app);
+import {
+  collection,
+  addDoc,
+  Timestamp,
+  doc,
+  updateDoc,
+} from 'firebase/firestore';
+import { db } from '../firebase';
 
 /**
  * Adds a new card to Firestore using pre-uploaded image URLs.

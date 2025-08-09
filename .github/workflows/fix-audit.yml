@@ -1,7 +1,7 @@
 name: Fix npm audit vulnerabilities
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub UI
+  workflow_dispatch: # Manual trigger from GitHub UI
 
 jobs:
   audit-fix:

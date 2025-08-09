@@ -1,9 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
-import { useAuth } from '../useAuth';
+import useAuth from '../useAuth';
 
-const admins = ['lwclark92@gmail.com', '', ''];
+const admins = [
+  'lwclark92@gmail.com',
+  'neetinegi.codedrill@gmail.com',
+  'dratidz@gmail.com',
+  'karan@codedrillinfotech.com',
+];
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -59,14 +64,40 @@ const MainMenu: React.FC = () => {
             borderLeft: '2px solid #555',
           }}
         >
-          <h2 style={{ borderBottom: '1px solid #444', paddingBottom: '0.5rem' }}>
+          <h2
+            style={{ borderBottom: '1px solid #444', paddingBottom: '0.5rem' }}
+          >
             🛠️ Admin
           </h2>
-          <button onClick={() => navigate('/card-creator')} style={adminButtonStyle}>
+          <button
+            onClick={() => navigate('/view-cards')}
+            style={adminButtonStyle}
+          >
+            View Card
+          </button>
+          <button
+            onClick={() => navigate('/card-creator')}
+            style={adminButtonStyle}
+          >
             ➕ Card Creator
           </button>
+          <button
+            onClick={() => navigate('/create-collection')}
+            style={adminButtonStyle}
+          >
+            ➕ Create Collection
+          </button>
+          <button
+            onClick={() => navigate('/create-rarity-gem')}
+            style={adminButtonStyle}
+          >
+            ➕ Create Rarity gem
+          </button>
           <br />
-          <button onClick={() => navigate('/card-editor')} style={adminButtonStyle}>
+          <button
+            onClick={() => navigate('/card-editor')}
+            style={adminButtonStyle}
+          >
             📝 Card Editor
           </button>
         </div>
@@ -77,7 +108,7 @@ const MainMenu: React.FC = () => {
 
 const buttonStyle: React.CSSProperties = {
   margin: '1rem auto',
-  padding: '0.8rem 2rem',
+  padding: '1rem 1rem',
   fontSize: '1.2rem',
   backgroundColor: '#333',
   color: 'white',
