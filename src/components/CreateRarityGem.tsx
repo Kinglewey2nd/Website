@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { useForm } from 'react-hook-form';
+import {  ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from '../firebase';
 
 type FormValues = {
   GemName: string;
@@ -47,42 +49,18 @@ const CreateRarityGem = () => {
         return;
       }
 
-      // Step 1 — Get signed upload URL from your Firebase Function
-      const res = await fetch(
-        'https://uploadcardimage-5b2gcbsowa-uc.a.run.app',
-        {
-          method: 'POST',
-          body: file,
-        }
-      );
+      const storageRef = ref(storage, `rarityGems/${fileName}`);
+    await uploadBytes(storageRef, file);
 
-      if (!res.ok) {
-        throw new Error('Failed to get signed upload URL');
-      }
 
-      const { url } = await res.json();
-
-      // Step 2 — Upload file to signed URL
-      const uploadRes = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': file.type,
-        },
-        body: file,
-      });
-
-      if (!uploadRes.ok) {
-        throw new Error('Failed to upload file to storage');
-      }
-
-      console.log('url of file =', url);
-
-      // Step 3 — Get public file URL
+    const publicUrl = await getDownloadURL(storageRef);
+      
+    console.log('Uploaded file URL:', publicUrl);
 
       // Step 4 — Save gem data in Firestore
       await addDoc(collection(db, 'rarityGems'), {
         gemName: data.GemName,
-        gemImageUrl: url,
+        gemImageUrl: publicUrl,
         createdAt: Timestamp.now(),
       });
 
@@ -96,19 +74,21 @@ const CreateRarityGem = () => {
       setLoading(false);
     }
   };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-black ">
+        <div className="text-center p-8 bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl">
+          <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-white text-xl">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 min-h-screen ">
-      {/* Back button */}
-      <button
-        type="button"
-        onClick={() => navigate(-1)}
-        className="mb-6 px-5 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-colors shadow-md"
-      >
-        Back to menu
-      </button>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-40">
         <div className="md:w-[420px] w-full bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-3xl font-bold mb-6 text-white text-center">
             Create Rarity Type

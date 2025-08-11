@@ -3,8 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import CardCreator from './components/CardCreator';
 import CardEditor from './components/CardEditor';
-import MainMenu from './components/MainMenu';
-import ViewCard from './components/ViewCard';
+import AdminLayout from './components/AdminLayout';
 import useAuth from './useAuth';
 import CreateCollection from './components/CreateCollection';
 import CreateRarityGem from './components/CreateRarityGem';
@@ -30,55 +29,22 @@ const App: React.FC = () => {
       {/* Public route */}
       <Route path="/login" element={<Login />} />
 
-      {/* Protected routes */}
+      {/* Protected routes with AdminLayout as a parent */}
       <Route
         path="/menu"
         element={
           <RequireAuth>
-            <MainMenu />
+            <AdminLayout />
           </RequireAuth>
         }
-      />
-      <Route
-        path="/view-cards"
-        element={
-          <RequireAuth>
-            <ViewCard />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/card-creator"
-        element={
-          <RequireAuth>
-            <CardCreator />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/create-collection"
-        element={
-          <RequireAuth>
-            <CreateCollection />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/card-editor"
-        element={
-          <RequireAuth>
-            <CardEditor />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/create-rarity-gem"
-        element={
-          <RequireAuth>
-            <CreateRarityGem />
-          </RequireAuth>
-        }
-      />
+      >
+        <Route index element={<Navigate to="card-creator" replace />} />
+        {/* Nested routes for the admin panel */}
+        <Route path="card-creator" element={<CardCreator />} />
+        <Route path="create-collection" element={<CreateCollection />} />
+        <Route path="card-editor" element={<CardEditor />} />
+        <Route path="create-rarity-gem" element={<CreateRarityGem />} />
+      </Route>
 
       {/* Redirect unknown routes to menu */}
       <Route path="*" element={<Navigate to="/menu" replace />} />

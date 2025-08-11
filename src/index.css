@@ -31,7 +31,7 @@ body {
 }
 
 /* Buttons */
-button {
+/* button {
   margin-bottom: 2rem;
   padding: 1rem 1rem;
   font-size: 1.2rem;
@@ -40,7 +40,7 @@ button {
   background: linear-gradient(to right, #ff5f6d, #ffc371);
   cursor: pointer;
   color: white;
-}
+} */
 
 /* Card grid layout */
 .card-grid {

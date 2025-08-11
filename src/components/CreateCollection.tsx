@@ -4,6 +4,9 @@ import { addDoc, collection } from 'firebase/firestore';
 import { useForm } from 'react-hook-form';
 import { db } from '@/firebase';
 import useAuth from '@/useAuth';
+import {  ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {storage} from '@/firebase';
+
 
 type FormValues = {
   collectionName: string;
@@ -50,14 +53,27 @@ const CreateCollection = () => {
       setStatus('⚠️ You must be signed in to create a collection.');
       return;
     }
+   
 
     try {
       setLoading(true);
+      const normalFrameFile = data.NormalFrame[0];
+      const normalRef = ref(storage, `collections/${Date.now()}-${normalFrameFile.name}`);
+      await uploadBytes(normalRef, normalFrameFile);
+      const normalFrameURL = await getDownloadURL(normalRef);
+  
+      // Upload Foil Frame
+      const foilFrameFile = data.FoilVersionFrame[0];
+      const foilRef = ref(storage, `collections/${Date.now()}-${foilFrameFile.name}`);
+      await uploadBytes(foilRef, foilFrameFile);
+      const foilFrameURL = await getDownloadURL(foilRef);
+
+      // Save collection data in Firestore
       await addDoc(collection(db, 'collections'), {
         collectionName: data.collectionName,
         flavorText: data.FlavorText,
-        normalFrame: data.NormalFrame[0]?.name,
-        foilVersionFrame: data.FoilVersionFrame[0]?.name,
+        normalFrame: normalFrameURL,
+        foilVersionFrame: foilFrameURL,
         ownerId: user.uid,
         createdAt: new Date(),
       });
@@ -73,18 +89,21 @@ const CreateCollection = () => {
       setStatus('Failed to save collection. Try again.');
     }
   };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-black ">
+        <div className="text-center p-8 bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl">
+          <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-white text-xl">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-10 h-screen">
-      <button
-        type="button"
-        className="mb-4 w-[250px] px-4 py-2 bg-gray-100 text-white rounded-md hover:bg-gray-700 transition"
-        onClick={() => navigate(-1)}
-      >
-        Back to menu
-      </button>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-40">
         <div className="md:w-[40%] bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-100">
             Create Collection
