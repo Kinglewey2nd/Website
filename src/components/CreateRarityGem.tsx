@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  Timestamp,
+  doc,
+  getDocs,
+} from 'firebase/firestore';
 import { useForm } from 'react-hook-form';
-import {  ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase';
+import toast, { Toaster } from 'react-hot-toast';
 
 type FormValues = {
   GemName: string;
@@ -16,7 +23,31 @@ const CreateRarityGem = () => {
   const [gemPreview, setGemPreview] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
+  const [RarityList, setRarityList] = useState<
+    { id: string; name: string; file: string }[]
+  >([]);
+  const [gemsLoaded, setGemsLoaded] = useState(false);
 
+  useEffect(() => {
+    const fetchRaarity = async () => {
+      try {
+        setGemsLoaded(true);
+        const querySnapshot = await getDocs(collection(db, 'rarityGems'));
+        const result = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().gemName || 'Untitled',
+          file: doc.data().gemImageUrl || '',
+        }));
+        setRarityList(result);
+        setGemsLoaded(false);
+      } catch (err) {
+        setGemsLoaded(false);
+        console.error('Error fetching rarity:', err);
+      }
+    };
+    fetchRaarity();
+  }, []);
+  console.log('Rarity List:', RarityList);
   const {
     register,
     handleSubmit,
@@ -50,12 +81,11 @@ const CreateRarityGem = () => {
       }
 
       const storageRef = ref(storage, `rarityGems/${fileName}`);
-    await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, file);
 
+      const publicUrl = await getDownloadURL(storageRef);
 
-    const publicUrl = await getDownloadURL(storageRef);
-      
-    console.log('Uploaded file URL:', publicUrl);
+      console.log('Uploaded file URL:', publicUrl);
 
       // Step 4 — Save gem data in Firestore
       await addDoc(collection(db, 'rarityGems'), {
@@ -64,9 +94,18 @@ const CreateRarityGem = () => {
         createdAt: Timestamp.now(),
       });
 
-      setStatus('Rarity gem created successfully!');
+      toast.success('Rarity gem created successfully!');
       reset();
       setGemPreview('');
+
+      // Refresh the rarity list
+      const querySnapshot = await getDocs(collection(db, 'rarityGems'));
+      const result = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().gemName || 'Untitled',
+        file: doc.data().gemImageUrl || '',
+      }));
+      setRarityList(result);
     } catch (err: any) {
       console.error(err);
       setStatus('failed: ' + (err.message || 'Unknown error'));
@@ -76,7 +115,7 @@ const CreateRarityGem = () => {
   };
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-black ">
+      <div className="flex items-center justify-center h-screen backdrop-blur-md ">
         <div className="text-center p-8 bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl">
           <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-white text-xl">Loading...</p>
@@ -87,7 +126,7 @@ const CreateRarityGem = () => {
 
   return (
     <div className="p-6 min-h-screen ">
-
+      <Toaster/>
       <div className="flex items-center justify-center mt-40">
         <div className="md:w-[420px] w-full bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-3xl font-bold mb-6 text-white text-center">
@@ -179,6 +218,63 @@ const CreateRarityGem = () => {
             </p>
           )}
         </div>
+      </div>
+
+      {/* Existing Rarity Types Section */}
+      <div className="max-w-6xl mx-auto mt-16">
+        <h3 className="text-3xl font-bold text-white mb-8 text-center">
+          Existing Rarity Types
+        </h3>
+        {gemsLoaded ? (
+          <div className="flex items-center justify-center backdrop-blur-md border border-purple-500 p-4 ">
+          <div className="text-center p-8 bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl">
+            <div className="animate-spin w-5 h-5 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-white text-xl">Loading...</p>
+          </div>
+        </div>
+        ) : (
+          <div>
+            {RarityList.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {RarityList.map(rarity => (
+                  <div
+                    key={rarity.id}
+                    className=" bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-md border border-gray-600/50 rounded-2xl p-6 shadow-lg "
+                  >
+                    {/* Gem Image Container */}
+                    <div className="relative mb-4 flex items-center justify-center">
+                      <div className="relative w-20 h-20 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-1">
+                        <img
+                          src={rarity.file}
+                          alt={rarity.name}
+                          className="w-full h-full object-cover rounded-full shadow-lg transition-all duration-300"
+                        />
+                      </div>
+                      {/* Glow effect */}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/10 to-blue-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
+                    </div>
+
+                    {/* Gem Name */}
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-white transition-colors duration-300 mb-1">
+                        {rarity.name}
+                      </h4>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <p className="text-gray-400 text-lg">
+                  No rarity types created yet.
+                </p>
+                <p className="text-gray-500 text-sm mt-2">
+                  Create your first rarity type using the form above!
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

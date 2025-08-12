@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { addDoc, collection } from 'firebase/firestore';
 import { useForm } from 'react-hook-form';
 import { db } from '@/firebase';
 import useAuth from '@/useAuth';
-import {  ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {storage} from '@/firebase';
-
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/firebase';
+import toast, { Toaster } from 'react-hot-toast';
 
 type FormValues = {
   collectionName: string;
@@ -17,8 +16,6 @@ type FormValues = {
 
 const CreateCollection = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-
   const [preview, setPreview] = useState('');
   const [gemPreview, setGemPreview] = useState('');
   const [status, setStatus] = useState('');
@@ -53,18 +50,23 @@ const CreateCollection = () => {
       setStatus('⚠️ You must be signed in to create a collection.');
       return;
     }
-   
 
     try {
       setLoading(true);
       const normalFrameFile = data.NormalFrame[0];
-      const normalRef = ref(storage, `collections/${Date.now()}-${normalFrameFile.name}`);
+      const normalRef = ref(
+        storage,
+        `collections/${Date.now()}-${normalFrameFile.name}`
+      );
       await uploadBytes(normalRef, normalFrameFile);
       const normalFrameURL = await getDownloadURL(normalRef);
-  
+
       // Upload Foil Frame
       const foilFrameFile = data.FoilVersionFrame[0];
-      const foilRef = ref(storage, `collections/${Date.now()}-${foilFrameFile.name}`);
+      const foilRef = ref(
+        storage,
+        `collections/${Date.now()}-${foilFrameFile.name}`
+      );
       await uploadBytes(foilRef, foilFrameFile);
       const foilFrameURL = await getDownloadURL(foilRef);
 
@@ -78,7 +80,7 @@ const CreateCollection = () => {
         createdAt: new Date(),
       });
 
-      setStatus('Collection created successfully!');
+      toast.success('Collection created successfully!');
       reset();
       setPreview('');
       setGemPreview('');
@@ -91,7 +93,7 @@ const CreateCollection = () => {
   };
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-black ">
+      <div className="flex items-center justify-center h-screen backdrop-blur-md ">
         <div className="text-center p-8 bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl">
           <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-white text-xl">Loading...</p>
@@ -102,7 +104,7 @@ const CreateCollection = () => {
 
   return (
     <div className="p-10 h-screen">
-
+      <Toaster/>
       <div className="flex items-center justify-center mt-40">
         <div className="md:w-[40%] bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-100">
@@ -199,7 +201,7 @@ const CreateCollection = () => {
 
             <button
               type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-500"
+              className="bg-green-600 cursor-pointer text-white px-4 py-2 rounded-xl hover:bg-green-500"
             >
               {loading ? 'Creating...' : 'Create Collection'}
             </button>
