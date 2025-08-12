@@ -9,7 +9,7 @@ import CreateCollection from './components/CreateCollection';
 import CreateRarityGem from './components/CreateRarityGem';
 import EditCardForm from './components/EditCardForm';
 
-// Protect routes to require authentication
+// Require auth for protected areas
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuth();
 
@@ -25,12 +25,30 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
 };
 
 const App: React.FC = () => {
+  const { user, loading } = useAuth();
+
   return (
     <Routes>
-      {/* Public route */}
+      {/* First page: decide based on auth */}
+      <Route
+        path="/"
+        element={
+          loading ? (
+            <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
+              Loading...
+            </div>
+          ) : user ? (
+            <Navigate to="/menu" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      {/* Public */}
       <Route path="/login" element={<Login />} />
 
-      {/* Protected routes with AdminLayout as a parent */}
+      {/* Protected area */}
       <Route
         path="/menu"
         element={
@@ -40,17 +58,28 @@ const App: React.FC = () => {
         }
       >
         <Route index element={<Navigate to="card-creator" replace />} />
-        {/* Nested routes for the admin panel */}
         <Route path="card-creator" element={<CardCreator />} />
         <Route path="create-collection" element={<CreateCollection />} />
         <Route path="cards" element={<CardEditor />} />
         <Route path="create-rarity-gem" element={<CreateRarityGem />} />
         <Route path="edit-card/:id" element={<EditCardForm />} />
-
       </Route>
 
-      {/* Redirect unknown routes to menu */}
-      <Route path="*" element={<Navigate to="/menu" replace />} />
+      {/* Fallback: send to correct place based on auth */}
+      <Route
+        path="*"
+        element={
+          loading ? (
+            <div style={{ color: 'white', textAlign: 'center', marginTop: '5rem' }}>
+              Loading...
+            </div>
+          ) : user ? (
+            <Navigate to="/menu" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
     </Routes>
   );
 };
