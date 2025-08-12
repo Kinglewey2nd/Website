@@ -5,6 +5,7 @@ import useAuth from '../useAuth';
 
 const admins = [
   'lwclark92@gmail.com',
+  'stuartbclinton@gmail.com',
   'neetinegi.codedrill@gmail.com',
   'dratidz@gmail.com',
   'karan@codedrillinfotech.com',
