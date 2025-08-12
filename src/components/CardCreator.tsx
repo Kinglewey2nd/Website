@@ -7,6 +7,7 @@ import { collection, addDoc, getDocs } from 'firebase/firestore';
 import './CardCreator.css';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase';
+import { Toaster, toast } from 'react-hot-toast';
 
 const inputs = [
   { name: 'cardName', label: 'Card Name', type: 'text' },
@@ -174,8 +175,10 @@ const CardCreator: React.FC = () => {
         createdAt: new Date().toISOString(),
       });
 
-      setStatus('Card created successfully!');
       setLoaading(false);
+      toast.success('Card created successfully!', {
+        duration: 5000,
+      });
       reset();
       setFile(null);
       setGemFile(null);
@@ -190,7 +193,7 @@ const CardCreator: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-black ">
+      <div className="flex items-center justify-center h-screen backdrop-blur-md ">
         <div className="text-center p-8 bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl">
           <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-white text-xl">Loading...</p>
@@ -201,6 +204,7 @@ const CardCreator: React.FC = () => {
 
   return (
     <div className="p-10 h-screen">
+      <Toaster/>
 
       <div className="card-creator-container flex gap-6 min-h-screen text-white p-6">
         {/* Form Section */}
@@ -360,13 +364,13 @@ const CardCreator: React.FC = () => {
 
             <button
               type="submit"
-              className="w-[150px] px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded transition"
+              className="w-[150px] px-4 cursor-pointer py-2 bg-green-600 hover:bg-green-500 text-white rounded transition"
             >
               {loading ? 'Creating...' : 'Create Card'}
             </button>
           </form>
 
-          <p className="mt-4 text-green-400">{status}</p>
+          <p className="mt-4 text-red-400">{status}</p>
         </div>
 
         {/* Preview Section */}
@@ -402,12 +406,12 @@ const CardCreator: React.FC = () => {
               <img
                 src={gemPreview}
                 alt="rarity-gem"
-                className="absolute top-[44px] left-[533px] w-[80px] h-[80px] z-20"
+                className="absolute top-[46px] left-[533px] w-[80px] h-[80px] z-20"
               />
             )}
 
             {/* Card text overlay */}
-            <div className="absolute top-[400px] left-[150px] right-[30px] z-20 text-center">
+            <div className="absolute top-[420px] left-[150px] right-[30px] z-20 text-center">
               <div className="text-lg font-bold">
                 {watch('cardName') || 'Card Name'}
               </div>
@@ -420,12 +424,12 @@ const CardCreator: React.FC = () => {
             </div>
 
             {/* Stats */}
-            <div className="absolute top-[560px] left-[32%]  z-20 text-sm font-bold">
+            <div className="absolute top-[580px] left-[31%]  z-20 text-sm font-bold">
               <span className="text-amber-300 text-2xl">
                 {watch('health') || '0'}
               </span>
             </div>
-            <div className="absolute top-[560px] left-[79.9%] z-20 text-sm font-bold">
+            <div className="absolute top-[580px] left-[79%] z-20 text-sm font-bold">
               <span className="text-amber-300 text-2xl">
                 {watch('attack') || '0'}
               </span>

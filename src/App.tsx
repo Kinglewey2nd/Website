@@ -7,6 +7,7 @@ import AdminLayout from './components/AdminLayout';
 import useAuth from './useAuth';
 import CreateCollection from './components/CreateCollection';
 import CreateRarityGem from './components/CreateRarityGem';
+import EditCardForm from './components/EditCardForm';
 
 // Protect routes to require authentication
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -42,8 +43,10 @@ const App: React.FC = () => {
         {/* Nested routes for the admin panel */}
         <Route path="card-creator" element={<CardCreator />} />
         <Route path="create-collection" element={<CreateCollection />} />
-        <Route path="card-editor" element={<CardEditor />} />
+        <Route path="cards" element={<CardEditor />} />
         <Route path="create-rarity-gem" element={<CreateRarityGem />} />
+        <Route path="edit-card/:id" element={<EditCardForm />} />
+
       </Route>
 
       {/* Redirect unknown routes to menu */}

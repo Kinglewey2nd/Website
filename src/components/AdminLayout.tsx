@@ -96,7 +96,7 @@ const AdminLayout: React.FC = () => {
           </NavLink>
 
           <NavLink 
-            to="/menu/card-editor" 
+            to="/menu/cards" 
             className={({ isActive }) => `
               block px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden
               ${isActive 
