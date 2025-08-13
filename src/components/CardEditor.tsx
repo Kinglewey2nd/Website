@@ -150,7 +150,7 @@ const CardEditor: React.FC = () => {
             <div className="absolute top-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
               <button
                 onClick={() => handleEdit(card.id)}
-                className="bg-purple-600/90 hover:bg-purple-500 text-white p-2 rounded-lg cursor-pointer backdrop-blur-sm transition-all duration-200 shadow-lg"
+                className="bg-purple-600/90 hover:bg-purple-500 text-white p-2 rounded-lg cursor-pointer backdrop-blur-sm transition-all duration-200 shadow-lg "
                 title="Edit Card"
                 disabled={deleting === card.id}
               >
