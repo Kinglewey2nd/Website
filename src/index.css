@@ -1,5 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Kepler Std';
+  src: url('./fonts/KeplerStd-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Optional: Controls font loading behavior */
+}
+
+@font-face {
+  font-family: 'Kepler Std';
+  src: url('./fonts/KeplerStd-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* Add more @font-face rules for other weights/styles as needed */
 /* Global styles */
 body {
   margin: 0;

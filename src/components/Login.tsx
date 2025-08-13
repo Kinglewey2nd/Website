@@ -2,19 +2,25 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import Navebar from './HomePage/Navbar';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [loading,setLoading]= useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
+      setLoading(false);
       navigate('/menu');
+
     } catch (err: any) {
+      setLoading(false);
       setError(err.message || 'Failed to sign in.');
     }
   };
@@ -22,14 +28,16 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      navigate('/menu');
+      navigate('/');
     } catch (err: any) {
       setError(err.message || 'Google sign-in failed.');
     }
   };
 
   return (
-    <div
+    <div>
+      <Navebar/>
+      <div
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -100,7 +108,7 @@ const Login: React.FC = () => {
               cursor: 'pointer',
             }}
           >
-            Login
+           {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
@@ -133,6 +141,7 @@ const Login: React.FC = () => {
           </Link>
         </div>
       </div>
+    </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 import useAuth from '../useAuth';
+import Navebar from './HomePage/Navbar';
 
 const admins = [
   'lwclark92@gmail.com',
@@ -19,18 +20,22 @@ const AdminLayout: React.FC = () => {
 
   const handleLogout = async () => {
     await signOut(getAuth());
-    navigate('/login');
+    navigate('/');
   };
 
   if (!isAdmin) {
-    return <div style={{ padding: '2rem', color: 'white' }}>No Access</div>;
-  }
+    navigate('/');
+    }
 
   return (
-    <div className="flex h-screen font-['Cinzel',serif]">
+    <div>
+      <Navebar/>
+      <div className="flex h-screen ">
+      
       {/* Sidebar */}
       <div className="w-80 bg-gray-900 text-white p-6 border-r border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-xl">
         {/* Header */}
+        
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center shadow-lg">
@@ -130,7 +135,7 @@ const AdminLayout: React.FC = () => {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="w-full px-4 py-3 bg-purple-500 hover:from-red-700 hover:to-red-800 text-white font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-red-500/20 border border-red-500/30 hover:border-red-400/50 group relative overflow-hidden"
+          className="w-full px-4 py-3 cursor-pointer bg-purple-500 hover:from-red-700 hover:to-red-800 text-white font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-red-500/20 border border-red-500/30 hover:border-red-400/50 group relative overflow-hidden"
         >
           <div className="flex items-center justify-center gap-2 relative z-10">
             <span></span>
@@ -146,6 +151,7 @@ const AdminLayout: React.FC = () => {
       <div className="flex-1 text-white overflow-y-auto">
         <Outlet />
       </div>
+    </div>
     </div>
   );
 };

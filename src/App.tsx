@@ -8,6 +8,10 @@ import useAuth from './useAuth';
 import CreateCollection from './components/CreateCollection';
 import CreateRarityGem from './components/CreateRarityGem';
 import EditCardForm from './components/EditCardForm';
+import Register from './components/Register';
+import Home from './components/HomePage/Home';
+import About from './components/HomePage/About';
+import Profile from './components/HomePage/Profile';
 
 // Require auth for protected areas
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -30,6 +34,8 @@ const App: React.FC = () => {
   return (
     <Routes>
       {/* First page: decide based on auth */}
+      <Route path='/' element={<Home/>}/>
+
       <Route
         path="/"
         element={
@@ -40,13 +46,16 @@ const App: React.FC = () => {
           ) : user ? (
             <Navigate to="/menu" replace />
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to="/" replace />
           )
         }
       />
 
       {/* Public */}
       <Route path="/login" element={<Login />} />
+      <Route path='/register' element={<Register/>}/>
+      <Route path='/about' element={<About/>}/>
+      <Route path='/profile' element={<Profile/>}/>
 
       {/* Protected area */}
       <Route

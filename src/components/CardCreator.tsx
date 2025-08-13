@@ -13,6 +13,7 @@ const inputs = [
   { name: 'cardName', label: 'Card Name', type: 'text' },
   { name: 'creatureType', label: 'Creature Type', type: 'text' },
   { name: 'description', label: 'Description', type: 'textarea' },
+  { name: 'cost', label: 'Cost', type: 'number' },
   { name: 'health', label: 'Health', type: 'number' },
   { name: 'attack', label: 'Attack', type: 'number' },
   { name: 'flavourText', label: 'Flavour Text', type: 'text' },
@@ -26,6 +27,7 @@ interface FormValues {
   health: string;
   attack: string;
   flavourtext: string;
+  cost: string;
 }
 
 const CardCreator: React.FC = () => {
@@ -46,6 +48,8 @@ const CardCreator: React.FC = () => {
       description: '',
       health: '',
       attack: '',
+      cost: '',
+      flavourtext: '',
     },
   });
 

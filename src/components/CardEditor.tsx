@@ -23,6 +23,7 @@ interface Card {
   collection: string;
   attack: string;
   flavourText: string;
+  cost: string;
 }
 
 const CardEditor: React.FC = () => {
@@ -215,6 +216,7 @@ const CardEditor: React.FC = () => {
                   className="absolute w-[500px] h-[700px] left-10 z-10 pointer-events-none"
                 />
               )}
+              <div className='text-amber-300 text-2xl font-extrabold font-[cinzel] absolute left-[116px] top-[80px] z-50'>{card.cost}</div>
 
               {/* Rarity Gem */}
               {card.gemImageUrl && (
@@ -238,10 +240,10 @@ const CardEditor: React.FC = () => {
 
               {/* Attack and Health Stats */}
               <div className="absolute top-[580px] left-[19%] z-20 text-sm font-bold">
-                <span className="text-amber-300 text-2xl">{card.attack}</span>
+                <span className="text-amber-300 font-[cinzel] text-2xl">{card.attack}</span>
               </div>
               <div className="absolute top-[580px] left-[86%] z-20 text-sm font-bold">
-                <span className="text-amber-300 text-2xl">{card.health}</span>
+                <span className="text-amber-300 font-[cinzel] text-2xl">{card.health}</span>
               </div>
 
               {/* Loading overlay when deleting */}

@@ -26,6 +26,7 @@ interface Card {
   creatureType: string;
   attack: string;
   flavourText: string;
+  cost: string;
 }
 
 const EditCardForm: React.FC = () => {
@@ -380,6 +381,19 @@ const EditCardForm: React.FC = () => {
                     className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
+              </div>
+              {/* Cost */}
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 font-medium">
+                  Cost *
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={card.cost || ''}
+                  onChange={e => handleChange('cost', e.target.value)}
+                  className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                />
               </div>
 
               {/* Description */}
