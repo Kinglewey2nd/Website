@@ -207,10 +207,10 @@ const CardCreator: React.FC = () => {
   }
 
   return (
-    <div className="p-10 h-screen">
+    <div className="p-10 min-h-screen ">
       <Toaster/>
 
-      <div className="card-creator-container flex gap-6 min-h-screen text-white p-6">
+      <div className="card-creator-container flex gap-6  text-white p-6">
         {/* Form Section */}
         <div className="form-section md:w-1/2 bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xlp-6 shadow-lg p-8">
           <h2 className="text-2xl font-bold mb-4">Create Card</h2>
