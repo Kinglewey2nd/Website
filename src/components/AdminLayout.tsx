@@ -31,7 +31,7 @@ const AdminLayout: React.FC = () => {
   return (
     <div>
       <Navebar/>
-      <div className="flex h-screen ">
+      <div className="flex ">
       
       {/* Sidebar */}
       <div className="w-80 bg-gray-900 text-white p-6 border-r border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-xl">

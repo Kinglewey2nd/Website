@@ -111,7 +111,7 @@ const CardEditor: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="h-screen overflow-y-auto p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-2">Cards</h1>
@@ -143,7 +143,7 @@ const CardEditor: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 -ml-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-10  ">
         {filteredCards.map(card => (
           <div key={card.id} className="group relative">
             {/* Hover Action Buttons - Top Right */}
@@ -198,13 +198,14 @@ const CardEditor: React.FC = () => {
             </div>
 
             {/* Card Preview - Original Design */}
-            <div className="relative h-[700px]">
+            <div className="relative  xl:h-[700px]  xl:w-[400px] m-auto">
               {/* Main Card Image */}
               {card.imageUrl && (
                 <img
                   src={card.imageUrl}
                   alt={card.cardName}
-                  className="absolute left-20 top-[45px] w-[400px] h-[400px] object-cover rounded-md z-0"
+                  loading='lazy'
+                  className="absolute -z-10 lg:top-[10px] xl:top-[30px] lg:w-[300px] lg:h-[300px] xl:w-[400px] xl:h-[400px] object-cover rounded-md "
                 />
               )}
 
@@ -213,37 +214,39 @@ const CardEditor: React.FC = () => {
                 <img
                   src={card.frameImgUrl}
                   alt="Frame"
-                  className="absolute w-[500px] h-[700px] left-10 z-10 pointer-events-none"
+                  loading='lazy'
+                  className=" lg:w-[300px] xl:w-[400px] xl:h-[700px] z-10 pointer-events-none"
                 />
               )}
-              <div className='text-amber-300 text-2xl font-extrabold font-[cinzel] absolute left-[116px] top-[80px] z-50'>{card.cost}</div>
+              <div className='text-amber-300 xl:text-2xl lg:text-xl font-extrabold font-[cinzel] absolute lg:left-[28px] lg:top-[25px] xl:left-[40px] xl:top-[45px] z-50'>{card.cost}</div>
 
               {/* Rarity Gem */}
               {card.gemImageUrl && (
                 <img
                   src={card.gemImageUrl}
                   alt="Gem"
-                  className="absolute top-[46px] left-[412px] w-[80px] h-[80px] z-20"
+                  loading='lazy'
+                  className="absolute xl:top-[15px] lg:top-[5px] xl:right-[12px] lg:right-[38px] lg:w-[60px] lg:h-[60px] xl:w-[80px] xl:h-[80px] z-20"
                 />
               )}
 
               {/* Card Text Content */}
-              <div className="absolute top-[420px] left-[110px] right-[30px] z-20 text-center">
-                <div className="text-lg font-bold">{card.cardName}</div>
-                <div className="italic text-gray-300 mt-4">
+              <div className="absolute xl:m-auto lg:m-auto lg:top-[280px] xl:top-[450px] w-full lg:pl-[15px] xl:pl-[15px] lg:pr-[20px] xl:pr-[15px] z-20 text-center">
+                <div className="lg:text-sm xl:text-lg font-bold">{card.cardName}</div>
+                <div className="italic text-gray-300 lg:mt-[10px] lg:text-sm xl:mt-[25px]">
                   {card.creatureType}
                 </div>
-                <div className="text-sm break-words mt-3 max-w-[280px] ml-[10%]">
+                <div className="xl:text-sm lg:text-xs break-words lg:mt-[5px] xl:mt-[15px] px-[60px] mb-[15px] w-full">
                   {card.description}
                 </div>
               </div>
 
               {/* Attack and Health Stats */}
-              <div className="absolute top-[580px] left-[19%] z-20 text-sm font-bold">
-                <span className="text-amber-300 font-[cinzel] text-2xl">{card.attack}</span>
+              <div className="absolute lg:bottom-[20px] xl:bottom-[36px] lg:left-[15px] xl:left-[25px] z-20 text-sm font-bold">
+                <span className="text-amber-300 font-[cinzel] lg:text-xl xl:text-2xl">{card.attack}</span>
               </div>
-              <div className="absolute top-[580px] left-[86%] z-20 text-sm font-bold">
-                <span className="text-amber-300 font-[cinzel] text-2xl">{card.health}</span>
+              <div className="absolute lg:bottom-[20px] xl:bottom-[36px] lg:left-[259px] xl:left-[350px] z-20 text-sm font-bold">
+                <span className="text-amber-300 font-[cinzel] lg:text-xl xl:text-2xl">{card.health}</span>
               </div>
 
               {/* Loading overlay when deleting */}
