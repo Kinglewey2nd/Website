@@ -11,6 +11,7 @@ const admins = [
   'dratidz@gmail.com',
   'karan@codedrillinfotech.com',
   'nitin@codedrillinfotech.com',
+  'lewis@twinsigilstudios.com',
 ];
 
 const AdminLayout: React.FC = () => {
